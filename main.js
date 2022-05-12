@@ -31,15 +31,26 @@ class Object{
     }
     move(direction){
         switch(direction){
-            case "right":
+            case "right": //Moves the player to the right
                 this.x+=playerSpeed;
+                break;
+            case "left": //Moves the player to the left
+                this.x-=playerSpeed;
+                break;
+            case "up": //Moves the player up
+                this.y-=playerSpeed;
+                break;
+            case "down": //Moves the player down
+                this.y+=playerSpeed;
+                break;
         }
     }
 }
 
 
 //var entities = [];
-var player = new Object("player","player.png",0,0,PLAYER_SIZE,PLAYER_SIZE); //Makes the player
+var player1 = new Object("player1","player1.png",250,CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE); //Makes the player's first object
+var player2 = new Object("player2","player2.png",750,CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE);//Makes the player's second object
 //entities.push(player);
 
 
@@ -55,13 +66,22 @@ window.addEventListener('keydown', keyDownFunction)
 
 function keyDownFunction(keyboardEvent){
     switch(keyboardEvent.key){
-        case "a": // Moves the player right
-            player.move(right);
+        case "d": // Moves the player right
+            player1.move("right");
+            player2.move("left");
             break;
-        case "d":
-            player.move(left);
+        case "a":
+            player1.move("left");
+            player2.move("right");
             break;
-
+        case "w":
+            player1.move("up");
+            player2.move("down");
+            break;
+        case "s":
+            player1.move("down");
+            player2.move("up");
+            break;
     }
 }
 
@@ -84,7 +104,9 @@ function updateCanvas() {
         ctx.fillStyle = "red";
         ctx.fillRect(entities[i].x, entities[i].y, entities[i].width, entities[i].height);
     }*/
-    player.draw();
+    player1.draw();
+    player2.draw();
+    //console.log(player2)
     
 
 }
