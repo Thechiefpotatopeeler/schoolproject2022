@@ -3,7 +3,11 @@ const CANVAS_HEIGHT = 500;
 const HEALTH_POS_X = 10;
 const HEALTH_POS_Y = 10;
 const HEALTH_SIZE = 10;
-const PLAYER_SIZE = 20;
+const PLAYER_SIZE = 16;
+const PLAYER_1_IMAGE = new Image();
+const PLAYER_2_IMAGE = new Image();
+PLAYER_1_IMAGE.src = "images/player1.png";
+PLAYER_2_IMAGE.src = "images/player2.png";
 
 var lives = 3;
 var playerSpeed = 5;
@@ -27,7 +31,8 @@ class Object{
     }
     draw(){//Draws the entity
         //console.log(player);
-        ctx.fillRect(this.x,this.y,this.width,this.height);
+        //ctx.fillRect(this.x,this.y,this.width,this.height);
+        ctx.drawImage(this.image,this.x,this.y,this.width,this.height);
     }
     move(direction){
         switch(direction){
@@ -49,9 +54,13 @@ class Object{
 
 
 //var entities = [];
-var player1 = new Object("player1","player1.png",250,CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE); //Makes the player's first object
-var player2 = new Object("player2","player2.png",750,CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE);//Makes the player's second object
+var player1 = new Object("player1",PLAYER_1_IMAGE,250,CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE); //Makes the player's first object
+var player2 = new Object("player2",PLAYER_2_IMAGE,750,CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE);//Makes the player's second object
 //entities.push(player);
+
+function getPlayerDistance(){
+    return Math.sqrt(Math.pow(player1.x-player2.x,2)+Math.pow(player1.y-player2.y,2)); //This uses the pythagoras theorem to find the distance between the two players
+}
 
 
 window.onload = startCanvas;
@@ -81,6 +90,10 @@ function keyDownFunction(keyboardEvent){
         case "s":
             player1.move("down");
             player2.move("up");
+            break;
+        case " ":
+            //playerAttack();
+            console.log(getPlayerDistance());
             break;
     }
 }
