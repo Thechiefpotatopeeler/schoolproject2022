@@ -11,12 +11,8 @@ PLAYER_2_IMAGE.src = "images/player2.png";
 
 var lives = 3;
 var playerSpeed = 5;
-
-class Vector {
-    constructor(x, y) { }
-}
 class Object{
-    constructor(id,image,x,y,width,height){
+    constructor(id,image,x,y,width,height){//Constructor for the entity, had the identifier, texture, coordinates, and size
         this.id=id;
         this.image=image;
         this.x=x;
@@ -54,15 +50,30 @@ class Object{
 
 
 //var entities = [];
-var player1 = new Object("player1",PLAYER_1_IMAGE,250,CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE); //Makes the player's first object
-var player2 = new Object("player2",PLAYER_2_IMAGE,750,CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE);//Makes the player's second object
+var player1 = new Object("player1",PLAYER_1_IMAGE,CANVAS_WIDTH/4,CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE); //Makes the player's first object
+var player2 = new Object("player2",PLAYER_2_IMAGE,3*(CANVAS_WIDTH/4),CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE);//Makes the player's second object
 //entities.push(player);
 
 function getPlayerDistance(){
     return Math.sqrt(Math.pow(player1.x-player2.x,2)+Math.pow(player1.y-player2.y,2)); //This uses the pythagoras theorem to find the distance between the two players
 }
+function playerAttack(){
+    ctx.beginPath();//Starts the path
+    ctx.lineWidth = 15
+    ctx.moveTo(player1.x,player1.y);//Moves the path to the player's position
+    ctx.lineTo(player2.x,player2.y);//Draws a line to the player's position
+    ctx.strokeStyle = "red";//Sets the color to red
+    ctx.stroke();//Fills the line
+}
+function damagePlayer(){
+    ctx.fillStyle = "white"; // Set the color to white
+    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);//Makes a flash of white
+    player1.setPosition(CANVAS_WIDTH/4,CANVAS_HEIGHT/2);//Resets the player's position
+    player2.setPosition(3*(CANVAS_WIDTH/4),CANVAS_HEIGHT/2);//Resets the player's position
+    lives--;//Removes a life
+}
 
-
+window.addEventListener('keydown', keyDownFunction)
 window.onload = startCanvas;
 function startCanvas() {
     ctx = document.getElementById("canvas").getContext("2d");
@@ -70,8 +81,6 @@ function startCanvas() {
     canvas = document.getElementById("Canvas"); // RESIZECANVAS get the canvas element
     setInterval(updateCanvas, 10); // Set up the animation with an interval timer
 }
-
-window.addEventListener('keydown', keyDownFunction)
 
 function keyDownFunction(keyboardEvent){
     switch(keyboardEvent.key){
@@ -92,7 +101,7 @@ function keyDownFunction(keyboardEvent){
             player2.move("up");
             break;
         case " ":
-            //playerAttack();
+            playerAttack();
             console.log(getPlayerDistance());
             break;
     }
@@ -104,23 +113,16 @@ function updateCanvas() {
     ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     // Every frame, draw all of the lives
     // This loop will draw one red square for each life left
-    let lifeCount = 0; // Start at the first life (counting from zero)
-    while (lifeCount < lives) {
-        ctx.fillStyle = "red";
-        ctx.fillRect(HEALTH_POS_X + lifeCount * 25, HEALTH_POS_Y, HEALTH_SIZE, HEALTH_SIZE); // Draw the life, use the lifeCounter to control the position
-        lifeCount++; // Move to the next life
+    for(lifeCount = 0; lifeCount < lives; lifeCount++) {
+        ctx.fillStyle = (lifeCount < 3) ? "red" : "blue";
+        ctx.fillRect(HEALTH_POS_X + lifeCount * 25, HEALTH_POS_Y, HEALTH_SIZE, HEALTH_SIZE); // Draw the life, use the lifeCounter to control the position; // Move to the next life
     }
-
-    //console.log(entities)
-
-    /*for (let i = 0; i < entities.length; i++) {
-        ctx.fillStyle = "red";
-        ctx.fillRect(entities[i].x, entities[i].y, entities[i].width, entities[i].height);
-    }*/
-    player1.draw();
-    player2.draw();
-    //console.log(player2)
+    if(getPlayerDistance()<20){
+        damagePlayer();
+    }
     
+    player1.draw();
+    player2.draw();   
 
 }
 
