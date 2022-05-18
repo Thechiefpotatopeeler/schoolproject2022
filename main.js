@@ -141,7 +141,7 @@ function updateCanvas() {
     }
     if(getPlayerDistance()<20){
         damagePlayer();
-    } else if(getPlayerDistance() > 1000){
+    } else if(getPlayerDistance() > CANVAS_WIDTH){
         damagePlayer();
     }
 
