@@ -10,7 +10,12 @@ PLAYER_1_IMAGE.src = "images/player1.png";
 PLAYER_2_IMAGE.src = "images/player2.png";
 
 var lives = 3;
-var playerSpeed = 5;
+var playerSpeed = 3;
+var rightPressed = false;
+var leftPressed = false;
+var upPressed = false;
+var downPressed = false;
+var attackPressed = false;
 class Object{
     constructor(id,image,x,y,width,height){//Constructor for the entity, had the identifier, texture, coordinates, and size
         this.id=id;
@@ -73,7 +78,7 @@ function damagePlayer(){
     lives--;//Removes a life
 }
 
-window.addEventListener('keydown', keyDownFunction)
+window.addEventListener('keydown', keyDown)
 window.onload = startCanvas;
 function startCanvas() {
     ctx = document.getElementById("canvas").getContext("2d");
@@ -82,27 +87,44 @@ function startCanvas() {
     setInterval(updateCanvas, 10); // Set up the animation with an interval timer
 }
 
-function keyDownFunction(keyboardEvent){
+function keyDown(keyboardEvent){
     switch(keyboardEvent.key){
         case "d": // Moves the player right
-            player1.move("right");
-            player2.move("left");
+            rightPressed = true;
             break;
         case "a":
-            player1.move("left");
-            player2.move("right");
+            leftPressed = true;
             break;
         case "w":
-            player1.move("up");
-            player2.move("down");
+            upPressed = true;
             break;
         case "s":
-            player1.move("down");
-            player2.move("up");
+            downPressed = true;
             break;
         case " ":
-            playerAttack();
-            console.log(getPlayerDistance());
+            attackPressed = true;
+            break;
+    }
+}
+
+window.addEventListener('keyup', keyUp)
+
+function keyUp(keyboardEvent){
+    switch(keyboardEvent.key){
+        case "d": // Moves the player right
+            rightPressed = false;
+            break;
+        case "a":
+            leftPressed = false;
+            break;
+        case "w":
+            upPressed = false;
+            break;
+        case "s":
+            downPressed = false;
+            break;
+        case " ":
+            attackPressed = false;
             break;
     }
 }
@@ -119,6 +141,26 @@ function updateCanvas() {
     }
     if(getPlayerDistance()<20){
         damagePlayer();
+    }
+
+    if(rightPressed == true){
+        player1.move("right");
+        player2.move("left");
+    }
+    if(leftPressed == true){
+        player1.move("left");
+        player2.move("right");
+    }
+    if(upPressed == true){
+        player1.move("up");
+        player2.move("down");
+    }
+    if(downPressed == true){
+        player1.move("down");
+        player2.move("up");
+    }
+    if(attackPressed == true){
+        playerAttack();
     }
     
     player1.draw();
