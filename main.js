@@ -55,7 +55,7 @@ class Object{
 
 
 //var entities = [];
-var player1 = new Object("player1",PLAYER_1_IMAGE,CANVAS_WIDTH/4,CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE); //Makes the player's first object
+var player1 = new Object("player1",PLAYER_1_IMAGE,(CANVAS_WIDTH/4)-PLAYER_SIZE,CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE); //Makes the player's first object
 var player2 = new Object("player2",PLAYER_2_IMAGE,3*(CANVAS_WIDTH/4),CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE);//Makes the player's second object
 //entities.push(player);
 
@@ -67,7 +67,7 @@ function playerAttack(){
     ctx.lineWidth = 15
     ctx.moveTo(player1.x,player1.y);//Moves the path to the player's position
     ctx.lineTo(player2.x,player2.y);//Draws a line to the player's position
-    ctx.strokeStyle = "red";//Sets the color to red
+    ctx.strokeStyle = "white";//Sets the color to red
     ctx.stroke();//Fills the line
 }
 function damagePlayer(){
@@ -140,6 +140,8 @@ function updateCanvas() {
         ctx.fillRect(HEALTH_POS_X + lifeCount * 25, HEALTH_POS_Y, HEALTH_SIZE, HEALTH_SIZE); // Draw the life, use the lifeCounter to control the position; // Move to the next life
     }
     if(getPlayerDistance()<20){
+        damagePlayer();
+    } else if(getPlayerDistance() > 1000){
         damagePlayer();
     }
 
