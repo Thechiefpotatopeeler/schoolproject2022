@@ -19,6 +19,7 @@ var downPressed = false;
 var attackPressed = false;
 var beamSize = 5;
 var attackPower = 100;
+var backUpAttack = 100;
 class Object{
     constructor(id,image,x,y,width,height){//Constructor for the entity, had the identifier, texture, coordinates, and size
         this.id=id;
@@ -77,8 +78,7 @@ function playerAttack(){
     }
     ctx.strokeStyle = "white";//Sets the color to red
     ctx.stroke();//Fills the line
-    const INTERVAL = setInterval(()=>attackPower--,100) //Removes attack power every tenth of a second 
-    console.log(attackPower)
+    attackPower--;//Reduces the attack power
 }
 function damagePlayer(){
     ctx.fillStyle = "white"; // Set the color to white
@@ -102,16 +102,16 @@ function keyDown(keyboardEvent){
         case "d": // Moves the player right
             rightPressed = true;
             break;
-        case "a":
+        case "a": //Moves the player lfeft
             leftPressed = true;
             break;
-        case "w":
+        case "w": //Moves the player up
             upPressed = true;
             break;
-        case "s":
+        case "s"://Moves the player down
             downPressed = true;
             break;
-        case " ":
+        case " "://Attacks
             if(attackPower >0){
                 attackPressed = true;
             }
@@ -123,21 +123,20 @@ window.addEventListener('keyup', keyUp)
 
 function keyUp(keyboardEvent){
     switch(keyboardEvent.key){
-        case "d": // Moves the player right
+        case "d": //Ends rigth movement
             rightPressed = false;
             break;
-        case "a":
+        case "a"://Ends left movemet
             leftPressed = false;
             break;
-        case "w":
+        case "w"://Ends up movement
             upPressed = false;
             break;
-        case "s":
+        case "s"://Ends down movement
             downPressed = false;
             break;
-        case " ":
+        case " "://Ends attack
             attackPressed = false;
-            INTERVAL.clearInterval();
             break;
     }
 }
@@ -157,7 +156,7 @@ function updateCanvas() {
     } else if(player1.x<0||player1.x>CANVAS_WIDTH-PLAYER_SIZE||player1.y<0||player1.y>CANVAS_HEIGHT-PLAYER_SIZE){
         damagePlayer();
     }
-
+    //This is where the movement and attack are actually executed
     if(rightPressed == true){
         player1.move("right");
         player2.move("left");
@@ -177,17 +176,30 @@ function updateCanvas() {
     if(attackPressed == true){
         playerAttack();
     }
-
+    //This is where the 'soft' attack cooldown is executed
     if(attackPower < 0){
-        attackPower = 0;
+        attackPower = 0; //Stops attack power from going below 0
     } else if(attackPower > 100){
-        attackPower = 100;
-    }
+        attackPower = 100; //Stops attack power from going above 100
+    } else if(attackPower >0||attackPower<100){//Regenerates attack power
+        attackPower+=0.1;
+    } 
     
-    player1.draw();
-    player2.draw();   
-    attackPower +=0.01;
-    console.log(attackPower);
+    player1.draw(); //Draws the first player object
+    player2.draw(); //Draws the second player object
+    //console.log(attackPower) //Prints the attack power
+    
+    if(attackPower>0){ //Renders the attack power bar
+        ctx.fillStyle = "blue";
+        ctx.fillRect(HEALTH_POS_X+100,HEALTH_POS_Y,attackPower,HEALTH_SIZE);
+    } else if(attackPower<=0){
+        ctx.fillStyle = "red";
+        ctx.fillRect(HEALTH_POS_X+100,HEALTH_POS_Y,100,HEALTH_SIZE);
+        //setTimeout(damagePlayer(),1000)
+    } else if(backUpAttack <= 0){
+        backUpAttack = 0; //Stops backup attack power from going below 0
+    }
+
 }
 
 
