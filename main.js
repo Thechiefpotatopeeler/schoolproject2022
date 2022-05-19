@@ -16,6 +16,7 @@ var leftPressed = false;
 var upPressed = false;
 var downPressed = false;
 var attackPressed = false;
+var beamSize = 5;
 class Object{
     constructor(id,image,x,y,width,height){//Constructor for the entity, had the identifier, texture, coordinates, and size
         this.id=id;
@@ -64,9 +65,14 @@ function getPlayerDistance(){
 }
 function playerAttack(){
     ctx.beginPath();//Starts the path
-    ctx.lineWidth = 15
-    ctx.moveTo(player1.x,player1.y);//Moves the path to the player's position
-    ctx.lineTo(player2.x,player2.y);//Draws a line to the player's position
+    ctx.lineWidth = beamSize
+    if(player1.x < player2.x){
+        ctx.moveTo(player1.x + PLAYER_SIZE/2,player1.y + PLAYER_SIZE/2);//Moves the path to the player's position
+        ctx.lineTo(player2.x+PLAYER_SIZE/2,player2.y+PLAYER_SIZE/2);//Draws a line to the player's position
+    } else if(player1.x > player2.x){
+        ctx.moveTo(player1.x+PLAYER_SIZE/2, player1.y+PLAYER_SIZE/2)
+        ctx.lineTo(player2.x+PLAYER_SIZE/2, player2.y+PLAYER_SIZE/2)
+    }
     ctx.strokeStyle = "white";//Sets the color to red
     ctx.stroke();//Fills the line
 }
@@ -141,7 +147,7 @@ function updateCanvas() {
     }
     if(getPlayerDistance()<20){
         damagePlayer();
-    } else if(getPlayerDistance() > CANVAS_WIDTH){
+    } else if(player1.x<0||player1.x>CANVAS_WIDTH-PLAYER_SIZE||player1.y<0||player1.y>CANVAS_HEIGHT-PLAYER_SIZE){
         damagePlayer();
     }
 
