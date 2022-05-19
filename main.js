@@ -6,17 +6,19 @@ const HEALTH_SIZE = 10;
 const PLAYER_SIZE = 16;
 const PLAYER_1_IMAGE = new Image();
 const PLAYER_2_IMAGE = new Image();
+const MAX_ATTACK_POWER = 100;
 PLAYER_1_IMAGE.src = "images/player1.png";
 PLAYER_2_IMAGE.src = "images/player2.png";
 
 var lives = 3;
-var playerSpeed = 3;
+var playerSpeed = 1.25;
 var rightPressed = false;
 var leftPressed = false;
 var upPressed = false;
 var downPressed = false;
 var attackPressed = false;
 var beamSize = 5;
+var attackPower = 100;
 class Object{
     constructor(id,image,x,y,width,height){//Constructor for the entity, had the identifier, texture, coordinates, and size
         this.id=id;
@@ -75,6 +77,8 @@ function playerAttack(){
     }
     ctx.strokeStyle = "white";//Sets the color to red
     ctx.stroke();//Fills the line
+    const INTERVAL = setInterval(()=>attackPower--,100) //Removes attack power every tenth of a second 
+    console.log(attackPower)
 }
 function damagePlayer(){
     ctx.fillStyle = "white"; // Set the color to white
@@ -108,7 +112,9 @@ function keyDown(keyboardEvent){
             downPressed = true;
             break;
         case " ":
-            attackPressed = true;
+            if(attackPower >0){
+                attackPressed = true;
+            }
             break;
     }
 }
@@ -131,6 +137,7 @@ function keyUp(keyboardEvent){
             break;
         case " ":
             attackPressed = false;
+            INTERVAL.clearInterval();
             break;
     }
 }
@@ -170,10 +177,17 @@ function updateCanvas() {
     if(attackPressed == true){
         playerAttack();
     }
+
+    if(attackPower < 0){
+        attackPower = 0;
+    } else if(attackPower > 100){
+        attackPower = 100;
+    }
     
     player1.draw();
     player2.draw();   
-
+    attackPower +=0.01;
+    console.log(attackPower);
 }
 
 
