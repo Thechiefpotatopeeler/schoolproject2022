@@ -1,3 +1,9 @@
+/*var http = require('http');
+
+http.createServer(function (req, res) {
+  res.writeHead(200, {'Content-Type': 'text/html'});
+}).listen(8080);*/
+
 const CANVAS_WIDTH = 1000;
 const CANVAS_HEIGHT = 500;
 const HEALTH_POS_X = 10;
@@ -39,19 +45,19 @@ class Object{
         //ctx.fillRect(this.x,this.y,this.width,this.height);
         ctx.drawImage(this.image,this.x,this.y,this.width,this.height);
     }
-    move(direction){
+    move(direction, speed){
         switch(direction){
             case "right": //Moves the player to the right
-                this.x+=playerSpeed;
+                this.x+=speed;
                 break;
             case "left": //Moves the player to the left
-                this.x-=playerSpeed;
+                this.x-=speed;
                 break;
             case "up": //Moves the player up
-                this.y-=playerSpeed;
+                this.y-=speed;
                 break;
             case "down": //Moves the player down
-                this.y+=playerSpeed;
+                this.y+=speed;
                 break;
         }
     }
@@ -158,20 +164,20 @@ function updateCanvas() {
     }
     //This is where the movement and attack are actually executed
     if(rightPressed == true){
-        player1.move("right");
-        player2.move("left");
+        player1.move("right",playerSpeed);
+        player2.move("left",playerSpeed);
     }
     if(leftPressed == true){
-        player1.move("left");
-        player2.move("right");
+        player1.move("left",playerSpeed);
+        player2.move("right",playerSpeed);
     }
     if(upPressed == true){
-        player1.move("up");
-        player2.move("down");
+        player1.move("up",playerSpeed);
+        player2.move("down",playerSpeed);
     }
     if(downPressed == true){
-        player1.move("down");
-        player2.move("up");
+        player1.move("down",playerSpeed);
+        player2.move("up",playerSpeed);
     }
     if(attackPressed == true){
         playerAttack();
@@ -191,11 +197,11 @@ function updateCanvas() {
     
     if(attackPower>0){ //Renders the attack power bar
         ctx.fillStyle = "blue";
-        ctx.fillRect(HEALTH_POS_X+100,HEALTH_POS_Y,attackPower,HEALTH_SIZE);
+        ctx.fillRect(HEALTH_POS_X+MAX_ATTACK_POWER,HEALTH_POS_Y,attackPower,HEALTH_SIZE);
     } else if(attackPower<=0){
-        ctx.fillStyle = "red";
-        ctx.fillRect(HEALTH_POS_X+100,HEALTH_POS_Y,100,HEALTH_SIZE);
-        //setTimeout(damagePlayer(),1000)
+        ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+        ctx.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
+        //setTimeout(damagePlayer, 1000)
     } else if(backUpAttack <= 0){
         backUpAttack = 0; //Stops backup attack power from going below 0
     }
