@@ -12,9 +12,11 @@ const HEALTH_SIZE = 10;
 const PLAYER_SIZE = 16;
 const PLAYER_1_IMAGE = new Image();
 const PLAYER_2_IMAGE = new Image();
+const ENEMY_IMAGE = new Image();
 const MAX_ATTACK_POWER = 100;
 PLAYER_1_IMAGE.src = "images/player1.png";
 PLAYER_2_IMAGE.src = "images/player2.png";
+ENEMY_IMAGE.src = "images/enemy.png";
 
 var lives = 3;
 var playerSpeed = 1.25;
