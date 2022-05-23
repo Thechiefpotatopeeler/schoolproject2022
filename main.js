@@ -28,6 +28,7 @@ var attackPressed = false;
 var beamSize = 5;
 var attackPower = 100;
 var backUpAttack = 100;
+var enemySpeed = 1.3
 class Object{
     constructor(id,image,x,y,width,height){//Constructor for the entity, had the identifier, texture, coordinates, and size
         this.id=id;
@@ -69,6 +70,7 @@ class Object{
 //var entities = [];
 var player1 = new Object("player1",PLAYER_1_IMAGE,(CANVAS_WIDTH/4)-PLAYER_SIZE,CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE); //Makes the player's first object
 var player2 = new Object("player2",PLAYER_2_IMAGE,3*(CANVAS_WIDTH/4),CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE);//Makes the player's second object
+var currentEnemies=[];
 //entities.push(player);
 
 function getPlayerDistance(){
@@ -96,13 +98,48 @@ function damagePlayer(){
     lives--;//Removes a life
 }
 
+function closestPlayer(object){//Uses pythagoras theorem to find the closest player
+    if(Math.sqrt(Math.pow(player1.x-object.x,2)+Math.pow(player1.y-object.y,2))<Math.sqrt(Math.pow(player2.x-object.x,2)+Math.pow(player2.y-object.y,2))){
+        return player1;
+    } else {
+        return player2;
+    }
+}
+
+function trackPlayer(object){
+    if(object.x<closestPlayer(object).x){
+        object.move("left",enemySpeed);//Moves the enemy to the left if the player is to the left
+    } else if(object.x>closestPlayer().x){
+        object.move("right",enemySpeed);//Moves the enemy to the right if the player is to the right
+    } else if(object.y<closestPlayer().y){
+        object.move("up",enemySpeed);//Moves the enemy up if the player is above
+    } else if(object.y>closestPlayer().y){
+        object.move("down",enemySpeed);//Moves the enemy down if the player is below
+    }
+}
+
+function generateEnemies(number){
+
+    for(i=0;i<number;i++){//Generates the enemies
+        currentEnemies.push(new Object("enemy"+i,ENEMY_IMAGE,Math.random()*CANVAS_WIDTH,Math.random()*CANVAS_HEIGHT,PLAYER_SIZE,PLAYER_SIZE));
+    }
+}
+
+function doEnemies(){//Moves and draws the enemies
+    for(i=0;i<currentEnemies.length;i++){
+        currentEnemies[i].draw();
+        trackPlayer(currentEnemies[i]);
+    }
+}
+
 window.addEventListener('keydown', keyDown)
 window.onload = startCanvas;
 function startCanvas() {
     ctx = document.getElementById("canvas").getContext("2d");
     gameDiv = document.getElementById("gameDiv");
     canvas = document.getElementById("Canvas"); // RESIZECANVAS get the canvas element
-    setInterval(updateCanvas, 10); // Set up the animation with an interval timer
+    generateEnemies(5);//Adds 5 enemies to the game
+    gameInterval = setInterval(updateCanvas, 10); // Set up the animation with an interval timer
 }
 
 function keyDown(keyboardEvent){
@@ -168,33 +205,35 @@ function updateCanvas() {
     if(rightPressed == true){
         player1.move("right",playerSpeed);
         player2.move("left",playerSpeed);
-    }
+        //console.log("right");
+    }//Moves the player right
     if(leftPressed == true){
         player1.move("left",playerSpeed);
-        player2.move("right",playerSpeed);
+        player2.move("right",playerSpeed);//Moves the player left
     }
     if(upPressed == true){
         player1.move("up",playerSpeed);
         player2.move("down",playerSpeed);
-    }
+    }//Moves the player up
     if(downPressed == true){
         player1.move("down",playerSpeed);
         player2.move("up",playerSpeed);
-    }
+    }//Moves the player down
     if(attackPressed == true){
         playerAttack();
-    }
+    }//Executes the player's attack
     //This is where the 'soft' attack cooldown is executed
     if(attackPower < 0){
         attackPower = 0; //Stops attack power from going below 0
     } else if(attackPower > 100){
         attackPower = 100; //Stops attack power from going above 100
     } else if(attackPower >0||attackPower<100){//Regenerates attack power
-        attackPower+=0.1;
+        attackPower+=0.2;
     } 
     
     player1.draw(); //Draws the first player object
     player2.draw(); //Draws the second player object
+    doEnemies(); //Draws the enemies
     //console.log(attackPower) //Prints the attack power
     
     if(attackPower>0){ //Renders the attack power bar
