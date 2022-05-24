@@ -107,13 +107,13 @@ function closestPlayer(object){//Uses pythagoras theorem to find the closest pla
 }
 
 function trackPlayer(object){
-    if(object.x<closestPlayer(object).x){
+    if(object.x>player2.x){
         object.move("left",enemySpeed);//Moves the enemy to the left if the player is to the left
-    } else if(object.x>closestPlayer().x){
+    } else if(object.x<player2.x){
         object.move("right",enemySpeed);//Moves the enemy to the right if the player is to the right
-    } else if(object.y<closestPlayer().y){
+    } else if(object.y>player2.y){
         object.move("up",enemySpeed);//Moves the enemy up if the player is above
-    } else if(object.y>closestPlayer().y){
+    } else if(object.y<player2.y){
         object.move("down",enemySpeed);//Moves the enemy down if the player is below
     }
 }
@@ -138,7 +138,7 @@ function startCanvas() {
     ctx = document.getElementById("canvas").getContext("2d");
     gameDiv = document.getElementById("gameDiv");
     canvas = document.getElementById("Canvas"); // RESIZECANVAS get the canvas element
-    generateEnemies(5);//Adds 5 enemies to the game
+    generateEnemies(1);//Adds 5 enemies to the game
     gameInterval = setInterval(updateCanvas, 10); // Set up the animation with an interval timer
 }
 
