@@ -33,7 +33,7 @@ var attackPower = 100;
 var backUpAttack = 100;
 var enemySpeed = 1.3
 var gameState = "menu";//Sets the gameState to menu
-class Object{
+class GameObject{
     constructor(id,image,x,y,width,height){//Constructor for the entity, had the identifier, texture, coordinates, and size
         this.id=id;
         this.image=image;
@@ -69,10 +69,10 @@ class Object{
         }
     }
 }
-const MENU_START_BUTTON = new Object("menuStartButton",START_BUTTON_IMAGE,CANVAS_WIDTH/2-160/2,CANVAS_HEIGHT/2-160/2,160,160);
+const MENU_START_BUTTON = new GameObject("menuStartButton",START_BUTTON_IMAGE,CANVAS_WIDTH/2-160/2,CANVAS_HEIGHT/2-160/2,160,160);
 //var entities = [];
-var player1 = new Object("player1",PLAYER_1_IMAGE,(CANVAS_WIDTH/4)-PLAYER_SIZE,CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE); //Makes the player's first object
-var player2 = new Object("player2",PLAYER_2_IMAGE,3*(CANVAS_WIDTH/4),CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE);//Makes the player's second object
+var player1 = new GameObject("player1",PLAYER_1_IMAGE,(CANVAS_WIDTH/4)-PLAYER_SIZE,CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE); //Makes the player's first GameObject
+var player2 = new GameObject("player2",PLAYER_2_IMAGE,3*(CANVAS_WIDTH/4),CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE);//Makes the player's second GameObject
 var currentEnemies=[];
 //entities.push(player);
 
@@ -125,7 +125,7 @@ function trackPlayer(object){
 function generateEnemies(number){
 
     for(i=0;i<number;i++){//Generates the enemies
-        currentEnemies.push(new Object("enemy"+i,ENEMY_IMAGE,Math.random()*CANVAS_WIDTH,Math.random()*CANVAS_HEIGHT,PLAYER_SIZE,PLAYER_SIZE));
+        currentEnemies.push(new GameObject("enemy"+i,ENEMY_IMAGE,Math.random()*CANVAS_WIDTH,Math.random()*CANVAS_HEIGHT,PLAYER_SIZE,PLAYER_SIZE));
     }
 }
 
@@ -269,8 +269,8 @@ function mainLoop() {
         attackPower+=0.2;
     } 
     
-    player1.draw(); //Draws the first player object
-    player2.draw(); //Draws the second player object
+    player1.draw(); //Draws the first player GameObject
+    player2.draw(); //Draws the second player GameObject
     doEnemies(); //Draws the enemies
     //console.log(attackPower) //Prints the attack power
     
