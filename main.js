@@ -31,7 +31,7 @@ var attackPressed = false;
 var beamSize = 5;
 var attackPower = 100;
 var backUpAttack = 100;
-var enemySpeed = 1.3
+var enemySpeed = 0.5;
 var gameState = "menu";//Sets the gameState to menu
 class GameObject{
     constructor(id,image,x,y,width,height){//Constructor for the entity, had the identifier, texture, coordinates, and size
@@ -110,15 +110,25 @@ function closestPlayer(object){//Uses pythagoras theorem to find the closest pla
 }
 
 function trackPlayer(object){
-    if(object.x>player2.x){
+    if(object.x>player1.x){
         object.move("left",enemySpeed);//Moves the enemy to the left if the player is to the left
-    } else if(object.x<player2.x){
+    } else if(object.x<player1.x){
         object.move("right",enemySpeed);//Moves the enemy to the right if the player is to the right
     }
-    if(object.y>player2.y){
+    if(object.y>player1.y){
         object.move("up",enemySpeed);//Moves the enemy up if the player is above
-    } else if(object.y<player2.y){
+    } else if(object.y<player1.y){
         object.move("down",enemySpeed);//Moves the enemy down if the player is below
+    }
+}
+
+function playerCollision(object){
+    if(object.x<player1.x+PLAYER_SIZE && object.x+object.width>player1.x && object.y<player1.y+PLAYER_SIZE && object.y+object.height>player1.y){
+        return true; //Returns true if the player1 GameObject is colliding with the object
+    } else if(object.x<player2.x+PLAYER_SIZE && object.x+object.width>player2.x && object.y<player2.y+PLAYER_SIZE && object.y+object.height>player2.y){
+        return true; //Returns true if the player2 GameObject is colliding with the object
+    } else {
+        return false;//Returns false when the object is not colliding with the player
     }
 }
 
@@ -133,6 +143,9 @@ function doEnemies(){//Moves and draws the enemies
     for(i=0;i<currentEnemies.length;i++){
         currentEnemies[i].draw();
         trackPlayer(currentEnemies[i]);
+        if(playerCollision(currentEnemies[i])){//If the enemy collides with the player
+            damagePlayer();//The player gets damaged
+        }
     }
 }
 
