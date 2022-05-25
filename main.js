@@ -10,13 +10,16 @@ const HEALTH_POS_X = 10;
 const HEALTH_POS_Y = 10;
 const HEALTH_SIZE = 10;
 const PLAYER_SIZE = 16;
+const MAX_ATTACK_POWER = 100;
 const PLAYER_1_IMAGE = new Image();
 const PLAYER_2_IMAGE = new Image();
 const ENEMY_IMAGE = new Image();
-const MAX_ATTACK_POWER = 100;
+const START_BUTTON_IMAGE = new Image();
+
 PLAYER_1_IMAGE.src = "images/player1.png";
 PLAYER_2_IMAGE.src = "images/player2.png";
 ENEMY_IMAGE.src = "images/enemy.png";
+START_BUTTON_IMAGE.src = "images/startButton.png";
 
 var lives = 3;
 var playerSpeed = 1.25;
@@ -29,6 +32,7 @@ var beamSize = 5;
 var attackPower = 100;
 var backUpAttack = 100;
 var enemySpeed = 1.3
+var gameState = "menu";//Sets the gameState to menu
 class Object{
     constructor(id,image,x,y,width,height){//Constructor for the entity, had the identifier, texture, coordinates, and size
         this.id=id;
@@ -65,8 +69,7 @@ class Object{
         }
     }
 }
-
-
+const MENU_START_BUTTON = new Object("menuStartButton",START_BUTTON_IMAGE,CANVAS_WIDTH/2-160/2,CANVAS_HEIGHT/2-160/2,160,160);
 //var entities = [];
 var player1 = new Object("player1",PLAYER_1_IMAGE,(CANVAS_WIDTH/4)-PLAYER_SIZE,CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE); //Makes the player's first object
 var player2 = new Object("player2",PLAYER_2_IMAGE,3*(CANVAS_WIDTH/4),CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE);//Makes the player's second object
@@ -111,7 +114,8 @@ function trackPlayer(object){
         object.move("left",enemySpeed);//Moves the enemy to the left if the player is to the left
     } else if(object.x<player2.x){
         object.move("right",enemySpeed);//Moves the enemy to the right if the player is to the right
-    } else if(object.y>player2.y){
+    }
+    if(object.y>player2.y){
         object.move("up",enemySpeed);//Moves the enemy up if the player is above
     } else if(object.y<player2.y){
         object.move("down",enemySpeed);//Moves the enemy down if the player is below
@@ -133,13 +137,35 @@ function doEnemies(){//Moves and draws the enemies
 }
 
 window.addEventListener('keydown', keyDown)
+window.addEventListener('keyup', keyUp)
 window.onload = startCanvas;
 function startCanvas() {
     ctx = document.getElementById("canvas").getContext("2d");
     gameDiv = document.getElementById("gameDiv");
-    canvas = document.getElementById("Canvas"); // RESIZECANVAS get the canvas element
+    canvas = document.getElementById("canvas"); // RESIZECANVAS get the canvas element
+    //canvas.addEventListener('mousemove', mouseMove); // add the mousemove event listener to the canvas element
+    canvas.addEventListener('click', mouseClick); // add the mouseclick event listener to the canvas element
     generateEnemies(1);//Adds 5 enemies to the game
-    gameInterval = setInterval(updateCanvas, 10); // Set up the animation with an interval timer
+    gameInterval = setInterval(()=>{//Starts the game
+        if(gameState=="menu"){
+            menuLoop();//When the gameState is set to menu, the menu is drawn
+        } else if(gameState=="game"){
+            mainLoop();//If the gameState is set to game, the game is in progress
+        } else if(gamestate=="gameOver"){
+            deathLoop();//When the gameState is set to false, the death loop is activated, which can lead back to the menu or to the game
+        }
+    }, 10); // Set up the animation with an interval timer
+}
+
+/*function mouseMove(e) {//This function is called when the mouse is moved
+    mouseX = e.offsetX;//Sets the mouseX variable to the mouse's x position
+    mouseY = e.offsetY;//Sets the mouseY variable to the mouse's y position
+}*/
+
+function mouseClick(e) {//This function is called when the mouse is clicked
+    if(e.offsetX >= MENU_START_BUTTON.x&&e.offsetX <= MENU_START_BUTTON.x+MENU_START_BUTTON.width&&e.offsetY >= MENU_START_BUTTON.y&&e.offsetY <= MENU_START_BUTTON.y+MENU_START_BUTTON.height){
+        gameState="game";//If the mouse is clicked on the start button, the gameState is set to game
+    }
 }
 
 function keyDown(keyboardEvent){
@@ -164,7 +190,6 @@ function keyDown(keyboardEvent){
     }
 }
 
-window.addEventListener('keyup', keyUp)
 
 function keyUp(keyboardEvent){
     switch(keyboardEvent.key){
@@ -186,7 +211,17 @@ function keyUp(keyboardEvent){
     }
 }
 
-function updateCanvas() {
+function menuLoop(){
+    ctx.fillStyle = "black"; // Set the color to black
+    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);//Makes a black background
+    //console.log("menu");
+    MENU_START_BUTTON.draw();//Draws the start button
+}
+function deathLoop(){
+
+}
+
+function mainLoop() {
     // Clear the scren
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
@@ -195,6 +230,9 @@ function updateCanvas() {
     for(lifeCount = 0; lifeCount < lives; lifeCount++) {
         ctx.fillStyle = (lifeCount < 3) ? "red" : "blue";
         ctx.fillRect(HEALTH_POS_X + lifeCount * 25, HEALTH_POS_Y, HEALTH_SIZE, HEALTH_SIZE); // Draw the life, use the lifeCounter to control the position; // Move to the next life
+    }
+    if(lives <= 0){
+        gameState="gameOver";//When the player runs out of lives, they die.
     }
     if(getPlayerDistance()<20){
         damagePlayer();
