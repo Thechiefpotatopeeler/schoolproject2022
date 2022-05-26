@@ -11,15 +11,18 @@ const HEALTH_POS_Y = 10;
 const HEALTH_SIZE = 10;
 const PLAYER_SIZE = 16;
 const MAX_ATTACK_POWER = 100;
+const GAME_OVER_TEXT = "Game Over";
 const PLAYER_1_IMAGE = new Image();
 const PLAYER_2_IMAGE = new Image();
 const ENEMY_IMAGE = new Image();
 const START_BUTTON_IMAGE = new Image();
+const RESTART_BUTTON_IMAGE = new Image();
 
 PLAYER_1_IMAGE.src = "images/player1.png";
 PLAYER_2_IMAGE.src = "images/player2.png";
 ENEMY_IMAGE.src = "images/enemy.png";
 START_BUTTON_IMAGE.src = "images/startButton.png";
+RESTART_BUTTON_IMAGE.src = "images/restartButton.png";
 
 var lives = 3;
 var playerSpeed = 1.25;
@@ -70,6 +73,7 @@ class GameObject{
     }
 }
 const MENU_START_BUTTON = new GameObject("menuStartButton",START_BUTTON_IMAGE,CANVAS_WIDTH/2-160/2,CANVAS_HEIGHT/2-160/2,160,160);
+const RESTART_BUTTON = new GameObject("restartButton",RESTART_BUTTON_IMAGE,CANVAS_WIDTH/2-160/2,CANVAS_HEIGHT/2-160/2,160,160);
 //var entities = [];
 var player1 = new GameObject("player1",PLAYER_1_IMAGE,(CANVAS_WIDTH/4)-PLAYER_SIZE,CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE); //Makes the player's first GameObject
 var player2 = new GameObject("player2",PLAYER_2_IMAGE,3*(CANVAS_WIDTH/4),CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE);//Makes the player's second GameObject
@@ -164,7 +168,7 @@ function startCanvas() {
             menuLoop();//When the gameState is set to menu, the menu is drawn
         } else if(gameState=="game"){
             mainLoop();//If the gameState is set to game, the game is in progress
-        } else if(gamestate=="gameOver"){
+        } else if(gameState=="gameOver"){
             deathLoop();//When the gameState is set to false, the death loop is activated, which can lead back to the menu or to the game
         }
     }, 10); // Set up the animation with an interval timer
@@ -178,6 +182,10 @@ function startCanvas() {
 function mouseClick(e) {//This function is called when the mouse is clicked
     if(e.offsetX >= MENU_START_BUTTON.x&&e.offsetX <= MENU_START_BUTTON.x+MENU_START_BUTTON.width&&e.offsetY >= MENU_START_BUTTON.y&&e.offsetY <= MENU_START_BUTTON.y+MENU_START_BUTTON.height){
         gameState="game";//If the mouse is clicked on the start button, the gameState is set to game
+    }
+    if(e.offsetX >=RESTART_BUTTON.x&&e.offsetX <=RESTART_BUTTON.x+RESTART_BUTTON.width&&e.offsetY >=RESTART_BUTTON.y&&e.offsetY <=RESTART_BUTTON.y+RESTART_BUTTON.height){
+        gameState="game";//If the mouse is clicked on the restart button, the gameState is set to game
+        lives = 3;
     }
 }
 
@@ -231,7 +239,12 @@ function menuLoop(){
     MENU_START_BUTTON.draw();//Draws the start button
 }
 function deathLoop(){
-
+    ctx.fillStyle="black";//Sets the color to black
+    ctx.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);//Makes a black background
+    ctx.fillStyle="red";//Sets the color to white
+    ctx.font = '48px arial';//Sets the font to 48px serif
+    ctx.fillText(GAME_OVER_TEXT,CANVAS_WIDTH/2-GAME_OVER_TEXT.length*15,CANVAS_HEIGHT/4);//Draws the game over text
+    RESTART_BUTTON.draw();//Draws the restart button
 }
 
 function mainLoop() {
@@ -300,4 +313,12 @@ function mainLoop() {
 
 }
 
+/**
+ * This is to map the coordinates that the enemy is on
+ * Use y=mx+c and m =dy/dx in a for loop to find the coordinates
+ * for(i = player1.x; i < getPlayerDistance()+1 i++){
+ *      
+ * }
 
+
+ */
