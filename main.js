@@ -78,6 +78,7 @@ const RESTART_BUTTON = new GameObject("restartButton",RESTART_BUTTON_IMAGE,CANVA
 var player1 = new GameObject("player1",PLAYER_1_IMAGE,(CANVAS_WIDTH/4)-PLAYER_SIZE,CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE); //Makes the player's first GameObject
 var player2 = new GameObject("player2",PLAYER_2_IMAGE,3*(CANVAS_WIDTH/4),CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE);//Makes the player's second GameObject
 var currentEnemies=[];
+let coordsAttack = [];
 //entities.push(player);
 
 function getPlayerDistance(){
@@ -149,7 +150,7 @@ function doEnemies(){//Moves and draws the enemies
         trackPlayer(currentEnemies[i]);
         if(playerCollision(currentEnemies[i])){//If the enemy collides with the player
             damagePlayer();//The player gets damaged
-        }
+        }    
     }
 }
 
@@ -211,6 +212,16 @@ function keyDown(keyboardEvent){
     }
 }
 
+function attackLine(){//Detects if enemies are on the line that runs between the player objects.
+    if(attackPressed == true){
+        for(i=0;i<currentEnemies.length;i++){
+            for(let x=0;x<Math.abs(player1.x-player2.x);x++){
+                let y=(player1.y-player2.y)/(player1.x-player2.x)*x+player1.y;
+                coordsAttack.push([x,y]);
+            }
+        }
+    }
+}
 
 function keyUp(keyboardEvent){
     switch(keyboardEvent.key){
@@ -294,7 +305,7 @@ function mainLoop() {
     } else if(attackPower >0||attackPower<100){//Regenerates attack power
         attackPower+=0.2;
     } 
-    
+
     player1.draw(); //Draws the first player GameObject
     player2.draw(); //Draws the second player GameObject
     doEnemies(); //Draws the enemies
