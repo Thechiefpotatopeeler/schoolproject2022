@@ -150,7 +150,10 @@ function doEnemies(){//Moves and draws the enemies
         trackPlayer(currentEnemies[i]);
         if(playerCollision(currentEnemies[i])){//If the enemy collides with the player
             damagePlayer();//The player gets damaged
-        }    
+        }
+        if(attackPressed==true&&attackLine()==true){//If the attack button is pressed and the attack line is true
+            currentEnemies.splice(i,1);//The enemy is removed
+        }
     }
 }
 
@@ -212,14 +215,12 @@ function keyDown(keyboardEvent){
     }
 }
 
-function attackLine(){//Detects if enemies are on the line that runs between the player objects.
+function attackLine(object){//Detects if enemies are on the line that runs between the player objects.
     if(attackPressed == true){
-        for(i=0;i<currentEnemies.length;i++){
-            for(let x=0;x<Math.abs(player1.x-player2.x);x++){
-                let y=(player1.y-player2.y)/(player1.x-player2.x)*x+player1.y;
-                coordsAttack.push([x,y]);
-            }
+        for(let x=0;x<Math.abs(player1.x-player2.x);x++){
+            let y=(player1.y-player2.y)/(player1.x-player2.x)*x+player1.y;
         }
+        return [x,y]
     }
 }
 
