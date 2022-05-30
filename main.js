@@ -151,9 +151,6 @@ function doEnemies(){//Moves and draws the enemies
         if(playerCollision(currentEnemies[i])){//If the enemy collides with the player
             damagePlayer();//The player gets damaged
         }
-        if(attackPressed==true&&attackLine()==true){//If the attack button is pressed and the attack line is true
-            currentEnemies.splice(i,1);//The enemy is removed
-        }
     }
 }
 
@@ -217,10 +214,15 @@ function keyDown(keyboardEvent){
 
 function attackLine(object){//Detects if enemies are on the line that runs between the player objects.
     if(attackPressed == true){
-        for(let x=0;x<Math.abs(player1.x-player2.x);x++){
-            let y=(player1.y-player2.y)/(player1.x-player2.x)*x+player1.y;
+        for(let i=0;i<currentEnemies.length;i++){
+            for(let x=player1.x;x<Math.abs(player1.x-player2.x);x++){
+                let y=((player1.y-player2.y)/(player1.x-player2.x))*x+player1.y;
+                if(currentEnemies[i].x==x&&currentEnemies[i].y==y){
+                    console.log("fds;llkjewkjflkjhlkjhfdslkjhfdslkjhffkjdlslkjgfdlkjgfdrs;gfds;lsgfdhgfdshgfdjhgfdkjkjhgfdkjhgfdkjhjhgfdjhkjhgfdkjhdfjhgfdjh")
+                }
+                //console.log(x+" "+y);
+            }
         }
-        return [x,y]
     }
 }
 
@@ -306,7 +308,7 @@ function mainLoop() {
     } else if(attackPower >0||attackPower<100){//Regenerates attack power
         attackPower+=0.2;
     } 
-
+    attackLine();
     player1.draw(); //Draws the first player GameObject
     player2.draw(); //Draws the second player GameObject
     doEnemies(); //Draws the enemies
