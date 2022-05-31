@@ -214,9 +214,11 @@ function keyDown(keyboardEvent){
 
 function attackLine(object){//Detects if enemies are on the line that runs between the player objects.
     if(attackPressed == true){
+        ctx.fillStyle="red";
         for(let i=0;i<currentEnemies.length;i++){
             for(let x=player1.x;x<Math.abs(player1.x-player2.x);x++){
                 let y=((player1.y-player2.y)/(player1.x-player2.x))*x+player1.y;
+                //ctx.fillRect(x,y,20,20);
                 if(currentEnemies[i].x==x&&currentEnemies[i].y==y){
                     console.log("fds;llkjewkjflkjhlkjhfdslkjhfdslkjhffkjdlslkjgfdlkjgfdrs;gfds;lsgfdhgfdshgfdjhgfdkjkjhgfdkjhgfdkjhjhgfdjhkjhgfdkjhdfjhgfdjh")
                 }
