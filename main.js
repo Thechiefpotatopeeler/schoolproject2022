@@ -214,11 +214,9 @@ function keyDown(keyboardEvent){
 
 function attackLine(){//Detects if enemies are on the line that runs between the player objects.
     if(attackPressed == true){
-        for(let i=0;i<currentEnemies.length;i++){//For every entity in the currentEnemies array
-            let playerSlope = (player1.y-player2.y)/(player1.x-player2.x);//Finds the slope of the line between the player objects
-            let objectPlayerSlope = (currentEnemies[i].y-player2.y)/(currentEnemies[i].x-player2.x);//Finds the slope of the line between the object and the player
-            if(currentEnemies[i].x > player1.x && currentEnemies[i].x < player2.x && currentEnemies[i].y > player1.y && currentEnemies[i].y < player2.y && playerSlope == objectPlayerSlope){//If the object is between the player1 and player2
-                console.log("fjhkdlkjhfdsalkfdsalkjh");//Logs if the enemy is on the line
+        for(i=0;i<currentEnemies.length;i++){
+            if(currentEnemies[i].x<player1.x+(PLAYER_SIZE/2) && currentEnemies[i].x+(currentEnemies[i].width/2)>player1.x && currentEnemies[i].y<player1.y+(PLAYER_SIZE/2) && currentEnemies[i].y+(currentEnemies[i].height/2)>player1.y){
+                console.log("hit");
             }
         }
     }
