@@ -215,8 +215,30 @@ function keyDown(keyboardEvent){
 function attackLine(){//Detects if enemies are on the line that runs between the player objects.
     if(attackPressed == true){
         for(i=0;i<currentEnemies.length;i++){
-            if(currentEnemies[i].x<player1.x+(PLAYER_SIZE/2) && currentEnemies[i].x+(currentEnemies[i].width/2)>player1.x && currentEnemies[i].y<player1.y+(PLAYER_SIZE/2) && currentEnemies[i].y+(currentEnemies[i].height/2)>player1.y){
-                console.log("hit");
+            /*if (player1.x < player2.x) {
+                if (currentEnemies[i].x >= player1.x && currentEnemies[i].x <= player2.x&&currentEnemies[i].y>=player1.y&&currentEnemies[i].y<=player2.y) {
+                    currentEnemies.splice(i);
+                }
+            } else if(player1.x > player2.x){
+                if (currentEnemies[i].x <= player1.x && currentEnemies[i].x >= player2.x&&currentEnemies[i].y>=player1.y&&currentEnemies[i].y<=player2.y) {
+                    currentEnemies.splice(i);
+                }
+            }*/
+            let dxc = currentEnemies[i].x - player1.x;
+            let dyc = currentEnemies[i].y - player1.y;
+
+            let dxl = player2.x - player1.x;
+            let dyl = player2.y - player1.y;
+            cross = dxc * dyl - dyc * dxl;
+            //console.log(cross);
+            if (Math.abs(dxl) >= Math.abs(dyl)){
+                return dxl > 0 ? 
+                player1.x <= currentEnemies[i].x && currentEnemies[i].x <= player2.x :
+                player2.x <= currentEnemies[i].x && currentEnemies[i].x <= player1.x;
+                } else{
+            return dyl > 0 ? 
+                player1.y <= currentEnemies[i].y && currentEnemies[i].y <= player2.y :
+                player2.y <= currentEnemies[i].y && currentEnemies[i].y <= player1.y;
             }
         }
     }
@@ -304,7 +326,9 @@ function mainLoop() {
     } else if(attackPower >0||attackPower<100){//Regenerates attack power
         attackPower+=0.2;
     } 
-    attackLine();
+    if(attackLine() == true){
+        console.log("hit");
+    }
     player1.draw(); //Draws the first player GameObject
     player2.draw(); //Draws the second player GameObject
     doEnemies(); //Draws the enemies
