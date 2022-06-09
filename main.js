@@ -35,6 +35,7 @@ var beamSize = 5;
 var attackPower = 100;
 var backUpAttack = 100;
 var enemySpeed = 0.5;
+var attack
 var gameState = "menu";//Sets the gameState to menu
 class GameObject{
     constructor(id,image,x,y,width,height){//Constructor for the entity, had the identifier, texture, coordinates, and size
@@ -213,32 +214,11 @@ function keyDown(keyboardEvent){
 }
 
 function attackLine(){//Detects if enemies are on the line that runs between the player objects.
-    if(attackPressed == true){
+    if(attack == true){
         for(i=0;i<currentEnemies.length;i++){
-            /*if (player1.x < player2.x) {
-                if (currentEnemies[i].x >= player1.x && currentEnemies[i].x <= player2.x&&currentEnemies[i].y>=player1.y&&currentEnemies[i].y<=player2.y) {
-                    currentEnemies.splice(i);
-                }
-            } else if(player1.x > player2.x){
-                if (currentEnemies[i].x <= player1.x && currentEnemies[i].x >= player2.x&&currentEnemies[i].y>=player1.y&&currentEnemies[i].y<=player2.y) {
-                    currentEnemies.splice(i);
-                }
-            }*/
-            let dxc = currentEnemies[i].x - player1.x;
-            let dyc = currentEnemies[i].y - player1.y;
-
-            let dxl = player2.x - player1.x;
-            let dyl = player2.y - player1.y;
-            cross = dxc * dyl - dyc * dxl;
-            //console.log(cross);
-            if (Math.abs(dxl) >= Math.abs(dyl)){
-                return dxl > 0 ? 
-                player1.x <= currentEnemies[i].x && currentEnemies[i].x <= player2.x :
-                player2.x <= currentEnemies[i].x && currentEnemies[i].x <= player1.x;
-                } else{
-            return dyl > 0 ? 
-                player1.y <= currentEnemies[i].y && currentEnemies[i].y <= player2.y :
-                player2.y <= currentEnemies[i].y && currentEnemies[i].y <= player1.y;
+            if(currentEnemies[i].x<player1.x+PLAYER_SIZE/2 && currentEnemies[i].x+currentEnemies[i].width>player1.x && currentEnemies[i].y<player1.y+PLAYER_SIZE/2 && currentEnemies[i].y+currentEnemies[i].height>player1.y){
+                currentEnemies.splice(i);
+                console.log("Enemy killed");
             }
         }
     }
@@ -307,16 +287,18 @@ function mainLoop() {
         player1.move("left",playerSpeed);
         player2.move("right",playerSpeed);//Moves the player left
     }
-    if(upPressed == true){
+    if(upPressed == true && attack != true){
         player1.move("up",playerSpeed);
         player2.move("down",playerSpeed);
     }//Moves the player up
-    if(downPressed == true){
+    if(downPressed == true&& attack != true){
         player1.move("down",playerSpeed);
         player2.move("up",playerSpeed);
     }//Moves the player down
-    if(attackPressed == true){
-        playerAttack();
+    if(attackPressed == true&&attackPower>0&&((player1.y-player2.y)==0||(player1.x-player2.x)==0)){
+        attack = true
+    }else{
+        attack = false
     }//Executes the player's attack
     //This is where the 'soft' attack cooldown is executed
     if(attackPower < 0){
@@ -325,10 +307,11 @@ function mainLoop() {
         attackPower = 100; //Stops attack power from going above 100
     } else if(attackPower >0||attackPower<100){//Regenerates attack power
         attackPower+=0.2;
-    } 
-    if(attackLine() == true){
-        console.log("hit");
     }
+    if(attack == true){
+        playerAttack();
+    }
+    attackLine();
     player1.draw(); //Draws the first player GameObject
     player2.draw(); //Draws the second player GameObject
     doEnemies(); //Draws the enemies
@@ -337,14 +320,10 @@ function mainLoop() {
     if(attackPower>0){ //Renders the attack power bar
         ctx.fillStyle = "blue";
         ctx.fillRect(HEALTH_POS_X+MAX_ATTACK_POWER,HEALTH_POS_Y,attackPower,HEALTH_SIZE);
-    } else if(attackPower<=0){
+    } else if(attackPower<20&&attackPower>=0){ //Renders the attack power bar
         ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
         ctx.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
-        //setTimeout(damagePlayer, 1000)
-    } else if(backUpAttack <= 0){
-        backUpAttack = 0; //Stops backup attack power from going below 0
     }
-
 }
 
 /**
