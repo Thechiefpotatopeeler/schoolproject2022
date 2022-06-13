@@ -17,12 +17,14 @@ const PLAYER_2_IMAGE = new Image();
 const ENEMY_IMAGE = new Image();
 const START_BUTTON_IMAGE = new Image();
 const RESTART_BUTTON_IMAGE = new Image();
+const LOGO_IMAGE = new Image();
 
 PLAYER_1_IMAGE.src = "images/player1.png";
 PLAYER_2_IMAGE.src = "images/player2.png";
 ENEMY_IMAGE.src = "images/enemy.png";
 START_BUTTON_IMAGE.src = "images/startButton.png";
 RESTART_BUTTON_IMAGE.src = "images/restartButton.png";
+LOGO_IMAGE.src = "images/logo.png";
 
 var lives = 3;
 var playerSpeed = 1.25;
@@ -73,6 +75,7 @@ class GameObject{
         }
     }
 }
+const MENU_LOGO = new GameObject("menuLogo",LOGO_IMAGE,CANVAS_WIDTH/2-508/2,2*80/4,508,80);//Creates the menu logo
 const MENU_START_BUTTON = new GameObject("menuStartButton",START_BUTTON_IMAGE,CANVAS_WIDTH/2-160/2,CANVAS_HEIGHT/2-160/2,160,160);
 const RESTART_BUTTON = new GameObject("restartButton",RESTART_BUTTON_IMAGE,CANVAS_WIDTH/2-160/2,CANVAS_HEIGHT/2-160/2,160,160);
 //var entities = [];
@@ -164,7 +167,7 @@ function startCanvas() {
     canvas = document.getElementById("canvas"); // RESIZECANVAS get the canvas element
     //canvas.addEventListener('mousemove', mouseMove); // add the mousemove event listener to the canvas element
     canvas.addEventListener('click', mouseClick); // add the mouseclick event listener to the canvas element
-    generateEnemies(1);//Adds 5 enemies to the game
+    //generateEnemies(1);//Adds 5 enemies to the game
     gameInterval = setInterval(()=>{//Starts the game
         if(gameState=="menu"){
             menuLoop();//When the gameState is set to menu, the menu is drawn
@@ -216,9 +219,8 @@ function keyDown(keyboardEvent){
 function attackLine(){//Detects if enemies are on the line that runs between the player objects.
     if(attack == true){
         for(i=0;i<currentEnemies.length;i++){
-            if(currentEnemies[i].x>player1.x && currentEnemies[i].x<player2.x && Math.round(currentEnemies[i].y)==(CANVAS_HEIGHT/2)){
-                currentEnemies.splice(i);
-                console.log("Enemy killed");
+            if(((currentEnemies[i].x>player1.x && currentEnemies[i].x<player2.x)||(currentEnemies[i].x<player1.x && currentEnemies[i].x>player2.x)) && Math.round(currentEnemies[i].y)==(CANVAS_HEIGHT/2)){
+                currentEnemies.splice(i);//Removes the enemy from the game
             }
         }
     }
@@ -249,6 +251,7 @@ function menuLoop(){
     ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);//Makes a black background
     //console.log("menu");
     MENU_START_BUTTON.draw();//Draws the start button
+    MENU_LOGO.draw();//Draws the logo
 }
 function deathLoop(){
     ctx.fillStyle="black";//Sets the color to black
@@ -295,7 +298,8 @@ function mainLoop() {
         player1.move("down",playerSpeed);
         player2.move("up",playerSpeed);
     }//Moves the player down
-    if(attackPressed == true&&attackPower>0&&((player1.y-player2.y)==0||(player1.x-player2.x)==0)){
+    console.log(player1.x-player2.x)
+    if(attackPressed == true&&attackPower>0&&((player1.y-player2.y==0)||(player1.x-player2.x==0))){
         attack = true
     }else{
         attack = false
@@ -311,7 +315,7 @@ function mainLoop() {
     if(attack == true){
         playerAttack();
     }
-    attackLine();
+    attackLine();//This checks if the player's attack hits an enemy
     player1.draw(); //Draws the first player GameObject
     player2.draw(); //Draws the second player GameObject
     doEnemies(); //Draws the enemies
