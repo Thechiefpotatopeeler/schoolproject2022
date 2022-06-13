@@ -167,7 +167,7 @@ function startCanvas() {
     canvas = document.getElementById("canvas"); // RESIZECANVAS get the canvas element
     //canvas.addEventListener('mousemove', mouseMove); // add the mousemove event listener to the canvas element
     canvas.addEventListener('click', mouseClick); // add the mouseclick event listener to the canvas element
-    //generateEnemies(1);//Adds 5 enemies to the game
+    generateEnemies(1);//Adds 5 enemies to the game
     gameInterval = setInterval(()=>{//Starts the game
         if(gameState=="menu"){
             menuLoop();//When the gameState is set to menu, the menu is drawn
