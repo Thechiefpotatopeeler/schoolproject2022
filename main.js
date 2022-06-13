@@ -216,7 +216,7 @@ function keyDown(keyboardEvent){
 function attackLine(){//Detects if enemies are on the line that runs between the player objects.
     if(attack == true){
         for(i=0;i<currentEnemies.length;i++){
-            if(currentEnemies[i].x<player1.x+PLAYER_SIZE/2 && currentEnemies[i].x+currentEnemies[i].width>player1.x && currentEnemies[i].y<player1.y+PLAYER_SIZE/2 && currentEnemies[i].y+currentEnemies[i].height>player1.y){
+            if(currentEnemies[i].x>player1.x && currentEnemies[i].x<player2.x && Math.round(currentEnemies[i].y)==(CANVAS_HEIGHT/2)){
                 currentEnemies.splice(i);
                 console.log("Enemy killed");
             }
