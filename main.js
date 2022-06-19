@@ -1,8 +1,3 @@
-/*var http = require('http');
-
-http.createServer(function (req, res) {
-  res.writeHead(200, {'Content-Type': 'text/html'});
-}).listen(8080);*/
 
 const CANVAS_WIDTH = 1000;
 const CANVAS_HEIGHT = 500;
@@ -18,6 +13,7 @@ const ENEMY_IMAGE = new Image();
 const START_BUTTON_IMAGE = new Image();
 const RESTART_BUTTON_IMAGE = new Image();
 const LOGO_IMAGE = new Image();
+const PAUSE_BUTTON_IMAGE = new Image();
 
 PLAYER_1_IMAGE.src = "images/player1.png";
 PLAYER_2_IMAGE.src = "images/player2.png";
@@ -25,6 +21,7 @@ ENEMY_IMAGE.src = "images/enemy.png";
 START_BUTTON_IMAGE.src = "images/startButton.png";
 RESTART_BUTTON_IMAGE.src = "images/restartButton.png";
 LOGO_IMAGE.src = "images/logo.png";
+PAUSE_BUTTON_IMAGE.src = "images/pauseButton.png";
 
 var lives = 3;
 var playerSpeed = 1.25;
@@ -38,7 +35,7 @@ var attackPower = 100;
 var backUpAttack = 100;
 var enemySpeed = 0.5;
 var attack
-var gameState = "menu";//Sets the gameState to menu
+var gameState = "photosensitiveWarning";//Sets the gameState to menu
 class GameObject{
     constructor(id,image,x,y,width,height){//Constructor for the entity, had the identifier, texture, coordinates, and size
         this.id=id;
@@ -78,6 +75,7 @@ class GameObject{
 const MENU_LOGO = new GameObject("menuLogo",LOGO_IMAGE,CANVAS_WIDTH/2-508/2,2*80/4,508,80);//Creates the menu logo
 const MENU_START_BUTTON = new GameObject("menuStartButton",START_BUTTON_IMAGE,CANVAS_WIDTH/2-160/2,CANVAS_HEIGHT/2-160/2,160,160);
 const RESTART_BUTTON = new GameObject("restartButton",RESTART_BUTTON_IMAGE,CANVAS_WIDTH/2-160/2,CANVAS_HEIGHT/2-160/2,160,160);
+const PAUSE_BUTTON = new GameObject("pauseButton",PAUSE_BUTTON_IMAGE,CANVAS_WIDTH-(16*2),0+(16),16,16);
 //var entities = [];
 var player1 = new GameObject("player1",PLAYER_1_IMAGE,(CANVAS_WIDTH/4)-PLAYER_SIZE,CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE); //Makes the player's first GameObject
 var player2 = new GameObject("player2",PLAYER_2_IMAGE,3*(CANVAS_WIDTH/4),CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE);//Makes the player's second GameObject
@@ -168,13 +166,27 @@ function startCanvas() {
     //canvas.addEventListener('mousemove', mouseMove); // add the mousemove event listener to the canvas element
     canvas.addEventListener('click', mouseClick); // add the mouseclick event listener to the canvas element
     generateEnemies(1);//Adds 5 enemies to the game
+
     gameInterval = setInterval(()=>{//Starts the game
         if(gameState=="menu"){
             menuLoop();//When the gameState is set to menu, the menu is drawn
-        } else if(gameState=="game"){
+        } else if(gameState=="pauseMenu"){
+            pauseMenuLoop();//When the gameState is set to pauseMenu, the pauseMenu is drawn
+        }else if(gameState=="game"){
             mainLoop();//If the gameState is set to game, the game is in progress
         } else if(gameState=="gameOver"){
             deathLoop();//When the gameState is set to false, the death loop is activated, which can lead back to the menu or to the game
+        } else if(gameState=="photosensitiveWarning"){
+            ctx.fillStyle="black";
+            ctx.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
+            ctx.fillStyle="red";
+            ctx.font = "50px Arial";
+            ctx.fillText("Photosensitivity warning!",CANVAS_WIDTH/2-200,CANVAS_HEIGHT/2-100);
+            ctx.fillStyle = "white";
+            ctx.font = "20px Arial";
+            ctx.fillText("Flashing colours, seizure risk",CANVAS_WIDTH/2-200,CANVAS_HEIGHT/2);
+            ctx.fillText("Press 'enter' to skip to menu",CANVAS_WIDTH/2-200,CANVAS_HEIGHT/2+50);
+            ctx.fillText("Press 'p' to enter photosensitive mode",CANVAS_WIDTH/2-200,CANVAS_HEIGHT/2+100);
         }
     }, 10); // Set up the animation with an interval timer
 }
@@ -185,8 +197,8 @@ function startCanvas() {
 }*/
 
 function mouseClick(e) {//This function is called when the mouse is clicked
-    if(e.offsetX >= MENU_START_BUTTON.x&&e.offsetX <= MENU_START_BUTTON.x+MENU_START_BUTTON.width&&e.offsetY >= MENU_START_BUTTON.y&&e.offsetY <= MENU_START_BUTTON.y+MENU_START_BUTTON.height){
-        gameState="game";//If the mouse is clicked on the start button, the gameState is set to game
+    if(e.offsetX >= MENU_START_BUTTON.x&&e.offsetX <= MENU_START_BUTTON.x+MENU_START_BUTTON.width&&e.offsetY >= MENU_START_BUTTON.y&&e.offsetY <= MENU_START_BUTTON.y+MENU_START_BUTTON.height&&gameState=="menu"){//If the mouse is clicked on the start button
+        gameState=="game";//If the mouse is clicked on the start button, the gameState is set to game
     }
     if(e.offsetX >=RESTART_BUTTON.x&&e.offsetX <=RESTART_BUTTON.x+RESTART_BUTTON.width&&e.offsetY >=RESTART_BUTTON.y&&e.offsetY <=RESTART_BUTTON.y+RESTART_BUTTON.height){
         gameState="game";//If the mouse is clicked on the restart button, the gameState is set to game
@@ -253,6 +265,10 @@ function menuLoop(){
     MENU_START_BUTTON.draw();//Draws the start button
     MENU_LOGO.draw();//Draws the logo
 }
+
+function pauseMenuLoop(){
+}
+
 function deathLoop(){
     ctx.fillStyle="black";//Sets the color to black
     ctx.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);//Makes a black background
@@ -318,6 +334,7 @@ function mainLoop() {
     attackLine();//This checks if the player's attack hits an enemy
     player1.draw(); //Draws the first player GameObject
     player2.draw(); //Draws the second player GameObject
+    PAUSE_BUTTON.draw();
     doEnemies(); //Draws the enemies
     //console.log(attackPower) //Prints the attack power
     
