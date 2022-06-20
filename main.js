@@ -11,7 +11,6 @@ const PLAYER_1_IMAGE = new Image();
 const PLAYER_2_IMAGE = new Image();
 const ENEMY_IMAGE = new Image();
 const START_BUTTON_IMAGE = new Image();
-const RESTART_BUTTON_IMAGE = new Image();
 const LOGO_IMAGE = new Image();
 const PAUSE_BUTTON_IMAGE = new Image();
 
@@ -19,7 +18,6 @@ PLAYER_1_IMAGE.src = "images/player1.png";
 PLAYER_2_IMAGE.src = "images/player2.png";
 ENEMY_IMAGE.src = "images/enemy.png";
 START_BUTTON_IMAGE.src = "images/startButton.png";
-RESTART_BUTTON_IMAGE.src = "images/restartButton.png";
 LOGO_IMAGE.src = "images/logo.png";
 PAUSE_BUTTON_IMAGE.src = "images/pauseButton.png";
 
@@ -36,6 +34,7 @@ var backUpAttack = 100;
 var enemySpeed = 0.5;
 var attack
 var gameState = "photosensitiveWarning";//Sets the gameState to menu
+var photosensitiveMode = false;
 class GameObject{
     constructor(id,image,x,y,width,height){//Constructor for the entity, had the identifier, texture, coordinates, and size
         this.id=id;
@@ -74,7 +73,6 @@ class GameObject{
 }
 const MENU_LOGO = new GameObject("menuLogo",LOGO_IMAGE,CANVAS_WIDTH/2-508/2,2*80/4,508,80);//Creates the menu logo
 const MENU_START_BUTTON = new GameObject("menuStartButton",START_BUTTON_IMAGE,CANVAS_WIDTH/2-160/2,CANVAS_HEIGHT/2-160/2,160,160);
-const RESTART_BUTTON = new GameObject("restartButton",RESTART_BUTTON_IMAGE,CANVAS_WIDTH/2-160/2,CANVAS_HEIGHT/2-160/2,160,160);
 const PAUSE_BUTTON = new GameObject("pauseButton",PAUSE_BUTTON_IMAGE,CANVAS_WIDTH-(16*2),0+(16),16,16);
 //var entities = [];
 var player1 = new GameObject("player1",PLAYER_1_IMAGE,(CANVAS_WIDTH/4)-PLAYER_SIZE,CANVAS_HEIGHT/2,PLAYER_SIZE,PLAYER_SIZE); //Makes the player's first GameObject
@@ -98,7 +96,7 @@ function playerAttack(){
     }
     ctx.strokeStyle = "white";//Sets the color to red
     ctx.stroke();//Fills the line
-    attackPower--;//Reduces the attack power
+    attackPower-=2;//Reduces the attack power
 }
 function damagePlayer(){
     ctx.fillStyle = "white"; // Set the color to white
@@ -163,6 +161,9 @@ function startCanvas() {
     ctx = document.getElementById("canvas").getContext("2d");
     gameDiv = document.getElementById("gameDiv");
     canvas = document.getElementById("canvas"); // RESIZECANVAS get the canvas element
+
+
+
     //canvas.addEventListener('mousemove', mouseMove); // add the mousemove event listener to the canvas element
     canvas.addEventListener('click', mouseClick); // add the mouseclick event listener to the canvas element
     generateEnemies(1);//Adds 5 enemies to the game
@@ -177,16 +178,7 @@ function startCanvas() {
         } else if(gameState=="gameOver"){
             deathLoop();//When the gameState is set to false, the death loop is activated, which can lead back to the menu or to the game
         } else if(gameState=="photosensitiveWarning"){
-            ctx.fillStyle="black";
-            ctx.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
-            ctx.fillStyle="red";
-            ctx.font = "50px Arial";
-            ctx.fillText("Photosensitivity warning!",CANVAS_WIDTH/2-200,CANVAS_HEIGHT/2-100);
-            ctx.fillStyle = "white";
-            ctx.font = "20px Arial";
-            ctx.fillText("Flashing colours, seizure risk",CANVAS_WIDTH/2-200,CANVAS_HEIGHT/2);
-            ctx.fillText("Press 'enter' to skip to menu",CANVAS_WIDTH/2-200,CANVAS_HEIGHT/2+50);
-            ctx.fillText("Press 'p' to enter photosensitive mode",CANVAS_WIDTH/2-200,CANVAS_HEIGHT/2+100);
+            photosensitiveWarningLoop();//When the gameState is set to photosensitiveWarning, the photosensitiveWarning loop is activated
         }
     }, 10); // Set up the animation with an interval timer
 }
@@ -197,11 +189,8 @@ function startCanvas() {
 }*/
 
 function mouseClick(e) {//This function is called when the mouse is clicked
-    if(e.offsetX >= MENU_START_BUTTON.x&&e.offsetX <= MENU_START_BUTTON.x+MENU_START_BUTTON.width&&e.offsetY >= MENU_START_BUTTON.y&&e.offsetY <= MENU_START_BUTTON.y+MENU_START_BUTTON.height&&gameState=="menu"){//If the mouse is clicked on the start button
-        gameState=="game";//If the mouse is clicked on the start button, the gameState is set to game
-    }
-    if(e.offsetX >=RESTART_BUTTON.x&&e.offsetX <=RESTART_BUTTON.x+RESTART_BUTTON.width&&e.offsetY >=RESTART_BUTTON.y&&e.offsetY <=RESTART_BUTTON.y+RESTART_BUTTON.height){
-        gameState="game";//If the mouse is clicked on the restart button, the gameState is set to game
+    if(e.offsetX >=MENU_START_BUTTON.x&&e.offsetX <=MENU_START_BUTTON.x+MENU_START_BUTTON.width&&e.offsetY >=MENU_START_BUTTON.y&&e.offsetY <=MENU_START_BUTTON.y+MENU_START_BUTTON.height&&(gameState=="menu"||gameState=="gameOver")){//If the mouse is clicked on the start button
+        gameState="game";//If the mouse is clicked on the start button, the gameState is set to game
         lives = 3;
     }
 }
@@ -219,6 +208,17 @@ function keyDown(keyboardEvent){
             break;
         case "s"://Moves the player down
             downPressed = true;
+            break;
+        case "Enter"://When the p key is pressed, the game will move from the photosensitivity warning to the menu
+            if(gameState=="photosensitiveWarning"){
+                gameState="menu";
+            }
+            break;
+        case "p"://When the p key is pressed, the game will enable photosensitivity mode and move to the menu
+            if(gameState=="photosensitiveWarning"){
+                photosensitiveMode = true;
+                gameState="menu";
+            }
             break;
         case " "://Attacks
             if(attackPower >0){
@@ -269,13 +269,26 @@ function menuLoop(){
 function pauseMenuLoop(){
 }
 
+function photosensitiveWarningLoop(){
+    ctx.fillStyle="black";
+    ctx.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
+    ctx.fillStyle="red";
+    ctx.font = "50px Arial";
+    ctx.fillText("Photosensitivity warning!",CANVAS_WIDTH/2-250,CANVAS_HEIGHT/2-100);
+    ctx.fillStyle = "white";
+    ctx.font = "20px Arial";
+    ctx.fillText("Flashing colours, seizure risk",CANVAS_WIDTH/2-200,CANVAS_HEIGHT/2);
+    ctx.fillText("Press 'enter' to skip to menu",CANVAS_WIDTH/2-200,CANVAS_HEIGHT/2+50);
+    ctx.fillText("Press 'p' to enter photosensitive mode",CANVAS_WIDTH/2-200,CANVAS_HEIGHT/2+100);
+}
+
 function deathLoop(){
     ctx.fillStyle="black";//Sets the color to black
     ctx.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);//Makes a black background
     ctx.fillStyle="red";//Sets the color to white
     ctx.font = '48px arial';//Sets the font to 48px serif
     ctx.fillText(GAME_OVER_TEXT,CANVAS_WIDTH/2-GAME_OVER_TEXT.length*15,CANVAS_HEIGHT/4);//Draws the game over text
-    RESTART_BUTTON.draw();//Draws the restart button
+    MENU_START_BUTTON.draw();//Draws the start button
 }
 
 function mainLoop() {
@@ -341,18 +354,8 @@ function mainLoop() {
     if(attackPower>0){ //Renders the attack power bar
         ctx.fillStyle = "blue";
         ctx.fillRect(HEALTH_POS_X+MAX_ATTACK_POWER,HEALTH_POS_Y,attackPower,HEALTH_SIZE);
-    } else if(attackPower<20&&attackPower>=0){ //Renders the attack power bar
+    } else if(attackPower<20&&attackPower>=0&&photosensitiveMode==false){ //Renders the attack power bar
         ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
         ctx.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
     }
 }
-
-/**
- * This is to map the coordinates that the enemy is on
- * Use y=mx+c and m =dy/dx in a for loop to find the coordinates
- * for(i = player1.x; i < getPlayerDistance()+1 i++){
- *      
- * }
-
-
- */
