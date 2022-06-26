@@ -1,3 +1,5 @@
+//Developed by Thomas Jackson
+//Language: javascript
 
 const CANVAS_WIDTH = 1000;
 const CANVAS_HEIGHT = 500;
@@ -37,15 +39,15 @@ var gameState = "photosensitiveWarning";//Sets the gameState to menu
 var photosensitiveMode = false;
 class GameObject{
     constructor(id,image,x,y,width,height){//Constructor for the entity, had the identifier, texture, coordinates, and size
-        this.id=id;
-        this.image=image;
-        this.x=x;
-        this.y=y;
-        this.width=width;
-        this.height=height;
+        this.id=id;//Sets the identifier
+        this.image=image;//Sets the texture
+        this.x=x;//Sets the x coordinate
+        this.y=y;//Sets the y coordinate
+        this.width=width;//Sets the width
+        this.height=height;//Sets the height
     }
 
-    setPosition(x,y){
+    setPosition(x,y){//Sets the position of the entity
         this.x=x;
         this.y=y;
     }
@@ -54,19 +56,19 @@ class GameObject{
         //ctx.fillRect(this.x,this.y,this.width,this.height);
         ctx.drawImage(this.image,this.x,this.y,this.width,this.height);
     }
-    move(direction, speed){
+    move(direction, distance){
         switch(direction){
             case "right": //Moves the player to the right
-                this.x+=speed;
+                this.x+=distance;
                 break;
             case "left": //Moves the player to the left
-                this.x-=speed;
+                this.x-=distance;
                 break;
             case "up": //Moves the player up
-                this.y-=speed;
+                this.y-=distance;
                 break;
             case "down": //Moves the player down
-                this.y+=speed;
+                this.y+=distance;
                 break;
         }
     }
@@ -99,8 +101,10 @@ function playerAttack(){
     attackPower-=2;//Reduces the attack power
 }
 function damagePlayer(){
-    ctx.fillStyle = "white"; // Set the color to white
-    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);//Makes a flash of white
+    if(photosensitiveMode!=true){
+        ctx.fillStyle = "white"; // Set the color to white
+        ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);//Makes a flash of white
+    }
     player1.setPosition(CANVAS_WIDTH/4,CANVAS_HEIGHT/2);//Resets the player's position
     player2.setPosition(3*(CANVAS_WIDTH/4),CANVAS_HEIGHT/2);//Resets the player's position
     lives--;//Removes a life
@@ -127,6 +131,7 @@ function trackPlayer(object){
     }
 }
 
+
 function playerCollision(object){
     if(object.x<player1.x+PLAYER_SIZE && object.x+object.width>player1.x && object.y<player1.y+PLAYER_SIZE && object.y+object.height>player1.y){
         return true; //Returns true if the player1 GameObject is colliding with the object
@@ -151,6 +156,35 @@ function doEnemies(){//Moves and draws the enemies
         if(playerCollision(currentEnemies[i])){//If the enemy collides with the player
             damagePlayer();//The player gets damaged
         }
+    }
+}
+
+function attackProcedures(){//This function governs everything related to the attack that needs to be exectuted every frame.
+    if(attackPressed == true&&attackPower>0&&(player1.y-player2.y==0)){
+        attack = true
+    }else if(attackPressed == true&&attackPower>0&&((player1.x-player2.x)<5&&(player1.x-player2.x)>-5)){
+        attack = true
+    }else{
+        attack = false
+    }//Executes the player's attack
+
+    //This is where the 'soft' attack cooldown is executed
+    if(attackPower < 0){
+        attackPower = 0; //Stops attack power from going below 0
+    } else if(attackPower > 100){
+        attackPower = 100; //Stops attack power from going above 100
+    } else if((attackPower >0||attackPower<100)&&attackPressed!=true){//Regenerates attack power
+        attackPower+=0.2;
+    }
+    if(attack == true){
+        playerAttack();
+    }
+    if(attackPower>0){ //Renders the attack power bar
+        ctx.fillStyle = "blue";
+        ctx.fillRect(HEALTH_POS_X+MAX_ATTACK_POWER,HEALTH_POS_Y,attackPower,HEALTH_SIZE);
+    } else if(attackPower<20&&attackPower>=0&&photosensitiveMode==false){ //Renders the attack power bar
+        ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+        ctx.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
     }
 }
 
@@ -228,10 +262,10 @@ function keyDown(keyboardEvent){
     }
 }
 
-function attackLine(){//Detects if enemies are on the line that runs between the player objects.
+function checkAttack(){//Detects if enemies are on the line that runs between the player objects.
     if(attack == true){
         for(i=0;i<currentEnemies.length;i++){
-            if(((currentEnemies[i].x>player1.x && currentEnemies[i].x<player2.x)||(currentEnemies[i].x<player1.x && currentEnemies[i].x>player2.x)) && Math.round(currentEnemies[i].y)==(CANVAS_HEIGHT/2)){
+            if(((currentEnemies[i].x>player1.x && currentEnemies[i].x<player2.x)||(currentEnemies[i].x<player1.x && currentEnemies[i].x>player2.x)) && Math.round(currentEnemies[i].y)==(CANVAS_HEIGHT/2)){//Checks if the enemy is on the line
                 currentEnemies.splice(i);//Removes the enemy from the game
             }
         }
@@ -310,12 +344,12 @@ function mainLoop() {
         damagePlayer();
     }
     //This is where the movement and attack are actually executed
-    if(rightPressed == true){
+    if(rightPressed == true && attack != true){
         player1.move("right",playerSpeed);
         player2.move("left",playerSpeed);
         //console.log("right");
-    }//Moves the player right
-    if(leftPressed == true){
+    }//Moves the player right when
+    if(leftPressed == true && attack != true){
         player1.move("left",playerSpeed);
         player2.move("right",playerSpeed);//Moves the player left
     }
@@ -327,35 +361,11 @@ function mainLoop() {
         player1.move("down",playerSpeed);
         player2.move("up",playerSpeed);
     }//Moves the player down
-    console.log(player1.x-player2.x)
-    if(attackPressed == true&&attackPower>0&&((player1.y-player2.y==0)||(player1.x-player2.x==0))){
-        attack = true
-    }else{
-        attack = false
-    }//Executes the player's attack
-    //This is where the 'soft' attack cooldown is executed
-    if(attackPower < 0){
-        attackPower = 0; //Stops attack power from going below 0
-    } else if(attackPower > 100){
-        attackPower = 100; //Stops attack power from going above 100
-    } else if(attackPower >0||attackPower<100){//Regenerates attack power
-        attackPower+=0.2;
-    }
-    if(attack == true){
-        playerAttack();
-    }
-    attackLine();//This checks if the player's attack hits an enemy
+    //console.log(player1.x-player2.x)
+    attackProcedures();
+    checkAttack();//This checks if the player's attack hits an enemy
     player1.draw(); //Draws the first player GameObject
     player2.draw(); //Draws the second player GameObject
     PAUSE_BUTTON.draw();
     doEnemies(); //Draws the enemies
-    //console.log(attackPower) //Prints the attack power
-    
-    if(attackPower>0){ //Renders the attack power bar
-        ctx.fillStyle = "blue";
-        ctx.fillRect(HEALTH_POS_X+MAX_ATTACK_POWER,HEALTH_POS_Y,attackPower,HEALTH_SIZE);
-    } else if(attackPower<20&&attackPower>=0&&photosensitiveMode==false){ //Renders the attack power bar
-        ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
-        ctx.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
-    }
 }
