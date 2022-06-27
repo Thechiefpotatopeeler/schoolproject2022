@@ -35,6 +35,7 @@ var attackPower = 100;
 var backUpAttack = 100;
 var enemySpeed = 0.5;
 var attack
+var score = 0;
 var gameState = "photosensitiveWarning";//Sets the gameState to menu
 var photosensitiveMode = false;
 class GameObject{
@@ -195,12 +196,10 @@ function startCanvas() {
     ctx = document.getElementById("canvas").getContext("2d");
     gameDiv = document.getElementById("gameDiv");
     canvas = document.getElementById("canvas"); // RESIZECANVAS get the canvas element
-
-
-
     //canvas.addEventListener('mousemove', mouseMove); // add the mousemove event listener to the canvas element
     canvas.addEventListener('click', mouseClick); // add the mouseclick event listener to the canvas element
-    generateEnemies(1);//Adds 5 enemies to the game
+    generateEnemies(5);//Adds 5 enemies to the game
+    score = 0;//Sets the score to 0
 
     gameInterval = setInterval(()=>{//Starts the game
         if(gameState=="menu"){
@@ -222,8 +221,8 @@ function startCanvas() {
     mouseY = e.offsetY;//Sets the mouseY variable to the mouse's y position
 }*/
 
-function mouseClick(e) {//This function is called when the mouse is clicked
-    if(e.offsetX >=MENU_START_BUTTON.x&&e.offsetX <=MENU_START_BUTTON.x+MENU_START_BUTTON.width&&e.offsetY >=MENU_START_BUTTON.y&&e.offsetY <=MENU_START_BUTTON.y+MENU_START_BUTTON.height&&(gameState=="menu"||gameState=="gameOver")){//If the mouse is clicked on the start button
+function mouseClick(event) {//This function is called when the mouse is clicked
+    if(event.offsetX >=MENU_START_BUTTON.x&&event.offsetX <=MENU_START_BUTTON.x+MENU_START_BUTTON.width&&event.offsetY >=MENU_START_BUTTON.y&&event.offsetY <=MENU_START_BUTTON.y+MENU_START_BUTTON.height&&(gameState=="menu"||gameState=="gameOver")){//If the mouse is clicked on the start button
         gameState="game";//If the mouse is clicked on the start button, the gameState is set to game
         lives = 3;
     }
@@ -267,6 +266,7 @@ function checkAttack(){//Detects if enemies are on the line that runs between th
         for(i=0;i<currentEnemies.length;i++){
             if(((currentEnemies[i].x>player1.x && currentEnemies[i].x<player2.x)||(currentEnemies[i].x<player1.x && currentEnemies[i].x>player2.x)) && Math.round(currentEnemies[i].y)==(CANVAS_HEIGHT/2)){//Checks if the enemy is on the line
                 currentEnemies.splice(i);//Removes the enemy from the game
+                score += 100;//Adds to the score
             }
         }
     }
