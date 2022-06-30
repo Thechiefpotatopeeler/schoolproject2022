@@ -1,7 +1,7 @@
 //Developed by Thomas Jackson
 //Language: javascript
 
-const CANVAS_WIDTH = 1001;
+const CANVAS_WIDTH = 1000;
 const CANVAS_HEIGHT = 500;
 const HEALTH_POS_X = 10;
 const HEALTH_POS_Y = 10;
