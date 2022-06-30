@@ -1,7 +1,7 @@
 //Developed by Thomas Jackson
 //Language: javascript
 
-const CANVAS_WIDTH = 1000;
+const CANVAS_WIDTH = 1001;
 const CANVAS_HEIGHT = 500;
 const HEALTH_POS_X = 10;
 const HEALTH_POS_Y = 10;
@@ -298,6 +298,14 @@ function menuLoop(){
     //console.log("menu");
     MENU_START_BUTTON.draw();//Draws the start button
     MENU_LOGO.draw();//Draws the logo
+
+    ctx.fillStyle = "white";
+    ctx.font = "30px arial";
+    ctx.fillText("How to play:",25,CANVAS_HEIGHT/2);
+    ctx.font = "20px arial";
+    ctx.fillText("WASD to move Square",25,CANVAS_HEIGHT/2+25);
+    ctx.fillText("Circle moves the opposite to Square",25,CANVAS_HEIGHT/2+50);
+    ctx.fillText("Space to attack",25,CANVAS_HEIGHT/2+75)
 }
 
 function pauseMenuLoop(){
