@@ -1,4 +1,7 @@
-//Developed by Thomas Jackson
+//Title: "Bondage"
+//Developed by: Thomas Jackson
+//Art by: Thomas Jackson
+//License: Creative Commons Attribution-NonCommercial-NoDerivs 2.0
 //Language: javascript
 
 const CANVAS_WIDTH = 1000;
@@ -9,12 +12,14 @@ const HEALTH_SIZE = 10;
 const PLAYER_SIZE = 16;
 const MAX_ATTACK_POWER = 100;
 const GAME_OVER_TEXT = "Game Over";
+
 const PLAYER_1_IMAGE = new Image();
 const PLAYER_2_IMAGE = new Image();
 const ENEMY_IMAGE = new Image();
 const START_BUTTON_IMAGE = new Image();
 const LOGO_IMAGE = new Image();
 const PAUSE_BUTTON_IMAGE = new Image();
+
 
 PLAYER_1_IMAGE.src = "images/player1.png";
 PLAYER_2_IMAGE.src = "images/player2.png";
@@ -99,7 +104,7 @@ function playerAttack(){
     }
     ctx.strokeStyle = "white";//Sets the color to red
     ctx.stroke();//Fills the line
-    attackPower-=2;//Reduces the attack power
+    attackPower-=5;//Reduces the attack power
 }
 function damagePlayer(){
     if(photosensitiveMode!=true){
@@ -370,6 +375,11 @@ function mainLoop() {
         player2.move("up",playerSpeed);
     }//Moves the player down
     //console.log(player1.x-player2.x)
+
+    ctx.fillStyle = "white";
+    ctx.font = "30px Arial";
+    ctx.fillText(score.toString(),attackPower+50,HEALTH_POS_Y);//Draws the score
+
     attackProcedures();
     checkAttack();//This checks if the player's attack hits an enemy
     player1.draw(); //Draws the first player GameObject
