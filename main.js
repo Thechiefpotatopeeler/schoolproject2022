@@ -272,6 +272,7 @@ function checkAttack(){//Detects if enemies are on the line that runs between th
             if(((currentEnemies[i].x>player1.x && currentEnemies[i].x<player2.x)||(currentEnemies[i].x<player1.x && currentEnemies[i].x>player2.x)) && Math.round(currentEnemies[i].y)==(CANVAS_HEIGHT/2)){//Checks if the enemy is on the line
                 currentEnemies.splice(i);//Removes the enemy from the game
                 score += 100;//Adds to the score
+                attack = false
             }
         }
     }
@@ -375,10 +376,13 @@ function mainLoop() {
         player2.move("up",playerSpeed);
     }//Moves the player down
     //console.log(player1.x-player2.x)
+    // if(currentEnemies.length()==0){
+    //     generateEnemies(score/100+10)
+    // }
 
     ctx.fillStyle = "white";
     ctx.font = "30px Arial";
-    ctx.fillText(score.toString(),attackPower+50,HEALTH_POS_Y);//Draws the score
+    ctx.fillText(score.toString(),CANVAS_WIDTH/4,HEALTH_POS_Y+25);//Draws the score
 
     attackProcedures();
     checkAttack();//This checks if the player's attack hits an enemy
