@@ -203,7 +203,7 @@ function startCanvas() {
     canvas = document.getElementById("canvas"); // RESIZECANVAS get the canvas element
     //canvas.addEventListener('mousemove', mouseMove); // add the mousemove event listener to the canvas element
     canvas.addEventListener('click', mouseClick); // add the mouseclick event listener to the canvas element
-    generateEnemies(5);//Adds 5 enemies to the game
+    generateEnemies(2);//Adds 5 enemies to the game
     score = 0;//Sets the score to 0
 
     gameInterval = setInterval(()=>{//Starts the game
@@ -376,9 +376,10 @@ function mainLoop() {
         player2.move("up",playerSpeed);
     }//Moves the player down
     //console.log(player1.x-player2.x)
-    // if(currentEnemies.length()==0){
-    //     generateEnemies(score/100+10)
-    // }
+    if(currentEnemies.length==0){
+        console.log("no enemies");
+        generateEnemies(score/100+10)
+    }
 
     ctx.fillStyle = "white";
     ctx.font = "30px Arial";
