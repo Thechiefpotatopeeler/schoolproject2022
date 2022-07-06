@@ -104,7 +104,7 @@ function playerAttack(){
     }
     ctx.strokeStyle = "white";//Sets the color to red
     ctx.stroke();//Fills the line
-    attackPower-=5;//Reduces the attack power
+    attackPower-=2;//Reduces the attack power
 }
 function damagePlayer(){
     if(photosensitiveMode!=true){
@@ -114,6 +114,9 @@ function damagePlayer(){
     player1.setPosition(CANVAS_WIDTH/4,CANVAS_HEIGHT/2);//Resets the player's position
     player2.setPosition(3*(CANVAS_WIDTH/4),CANVAS_HEIGHT/2);//Resets the player's position
     lives--;//Removes a life
+    for(i=0;i<currentEnemies.length;i++){//Removes all enemies
+        currentEnemies[i].setPosition(Math.random()*CANVAS_WIDTH,Math.random()*CANVAS_HEIGHT);//Resets the enemy's position
+    }
 }
 
 function closestPlayer(object){//Uses pythagoras theorem to find the closest player
@@ -270,9 +273,11 @@ function checkAttack(){//Detects if enemies are on the line that runs between th
     if(attack == true){
         for(i=0;i<currentEnemies.length;i++){
             if(((currentEnemies[i].x>player1.x && currentEnemies[i].x<player2.x)||(currentEnemies[i].x<player1.x && currentEnemies[i].x>player2.x)) && Math.round(currentEnemies[i].y)==(CANVAS_HEIGHT/2)){//Checks if the enemy is on the line
-                currentEnemies.splice(i);//Removes the enemy from the game
+                currentEnemies.splice(i,1);//Removes the enemy from the game
                 score += 100;//Adds to the score
-                attack = false
+            }else if(((currentEnemies[i].y>player1.y && currentEnemies[i].y<player2.y)||(currentEnemies[i].y<player1.y && currentEnemies[i].y>player2.y)) && Math.round(currentEnemies[i].x)==(CANVAS_WIDTH/2)){//Checks if the enemy is on the line
+                currentEnemies.splice(i,1);//Removes the enemy from the game
+                score += 100;//Adds to the score
             }
         }
     }
@@ -325,7 +330,7 @@ function photosensitiveWarningLoop(){
     ctx.fillText("Photosensitivity warning!",CANVAS_WIDTH/2-250,CANVAS_HEIGHT/2-100);
     ctx.fillStyle = "white";
     ctx.font = "20px Arial";
-    ctx.fillText("Flashing colours, seizure risk",CANVAS_WIDTH/2-200,CANVAS_HEIGHT/2);
+    ctx.fillText("Flashing colours, strobe effect, seizure risk",CANVAS_WIDTH/2-200,CANVAS_HEIGHT/2);
     ctx.fillText("Press 'enter' to skip to menu",CANVAS_WIDTH/2-200,CANVAS_HEIGHT/2+50);
     ctx.fillText("Press 'p' to enter photosensitive mode",CANVAS_WIDTH/2-200,CANVAS_HEIGHT/2+100);
 }
@@ -376,9 +381,10 @@ function mainLoop() {
         player2.move("up",playerSpeed);
     }//Moves the player down
     //console.log(player1.x-player2.x)
+    console.log(currentEnemies)
     if(currentEnemies.length==0){
-        console.log("no enemies");
-        generateEnemies(score/100+10)
+        //console.log("no");
+        generateEnemies(score/100)
     }
 
     ctx.fillStyle = "white";
