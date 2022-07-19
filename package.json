@@ -13,6 +13,7 @@
   "author": "Thechiefpotatopeeler",
   "license": "ISC",
   "dependencies": {
+    "howler": "^2.2.3",
     "mysql": "^2.18.1"
   }
 }

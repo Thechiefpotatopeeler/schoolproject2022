@@ -2,7 +2,10 @@
 //Developed by: Thomas Jackson
 //Art by: Thomas Jackson
 //License: Creative Commons Attribution-NonCommercial-NoDerivs 2.0
-//Language: javascript
+//Language: javascript#
+
+const {Howl, Howler} = require('howler');
+
 
 const CANVAS_WIDTH = 1000;//This constant is the canvas width
 const CANVAS_HEIGHT = 500;//This constant is the canvas height
@@ -27,6 +30,17 @@ ENEMY_IMAGE.src = "images/enemy.png";//This is the source for the enemy image
 START_BUTTON_IMAGE.src = "images/startButton.png";//This is the source for the start button image
 LOGO_IMAGE.src = "images/logo.png";//This is the source for the logo image
 PAUSE_BUTTON_IMAGE.src = "images/pauseButton.png";//This is the source for the pause button image
+
+var mainTheme = new Howl({//This is the main theme
+    src: ['mainTheme.wav'],
+    autoplay: true,
+    loop: true,
+    volume: 0.5,
+    onend: function() {
+        console.log('Finished!');
+    }
+});
+
 
 var lives = 3;//This is the number of lives
 var playerSpeed = 1.25;//This is the player's speed coefficient
@@ -206,6 +220,7 @@ function startCanvas() {
     canvas.addEventListener('click', mouseClick); // add the mouseclick event listener to the canvas element
     generateEnemies(2);//Adds 5 enemies to the game
     score = 0;//Sets the score to 0
+    mainTheme.play();//Plays the main theme
 
     gameInterval = setInterval(()=>{//Starts the game
         if(gameState=="menu"){
