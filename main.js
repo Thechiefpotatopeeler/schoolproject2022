@@ -4,7 +4,6 @@
 //License: Creative Commons Attribution-NonCommercial-NoDerivs 2.0
 //Language: javascript#
 
-const {Howl, Howler} = require('howler');
 
 
 const CANVAS_WIDTH = 1000;//This constant is the canvas width
@@ -31,15 +30,6 @@ START_BUTTON_IMAGE.src = "images/startButton.png";//This is the source for the s
 LOGO_IMAGE.src = "images/logo.png";//This is the source for the logo image
 PAUSE_BUTTON_IMAGE.src = "images/pauseButton.png";//This is the source for the pause button image
 
-var mainTheme = new Howl({//This is the main theme
-    src: ['mainTheme.wav'],
-    autoplay: true,
-    loop: true,
-    volume: 0.5,
-    onend: function() {
-        console.log('Finished!');
-    }
-});
 
 
 var lives = 3;//This is the number of lives
@@ -220,8 +210,6 @@ function startCanvas() {
     canvas.addEventListener('click', mouseClick); // add the mouseclick event listener to the canvas element
     generateEnemies(2);//Adds 5 enemies to the game
     score = 0;//Sets the score to 0
-    mainTheme.play();//Plays the main theme
-
     gameInterval = setInterval(()=>{//Starts the game
         if(gameState=="menu"){
             menuLoop();//When the gameState is set to menu, the menu is drawn
@@ -263,15 +251,17 @@ function keyDown(keyboardEvent){//This function is called when a key is pressed 
         case "s"://Moves the player down
             downPressed = true;
             break;
-        case "Enter"://When the p key is pressed, the game will move from the photosensitivity warning to the menu
+        case "Enter"://When the p key is pressed, the game will move from the photosensitivity warning to the menu and plays the game's soundtrack
             if(gameState=="photosensitiveWarning"){
                 gameState="menu";
+                sound.play();
             }
             break;
-        case "p"://When the p key is pressed, the game will enable photosensitivity mode and move to the menu
+        case "p"://When the p key is pressed, the game will enable photosensitivity mode and move to the menu and plays the game's soundtrack
             if(gameState=="photosensitiveWarning"){
                 photosensitiveMode = true;
                 gameState="menu";
+                sound.play();
             }
             break;
         case " "://Attacks

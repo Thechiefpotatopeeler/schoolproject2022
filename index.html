@@ -4,6 +4,13 @@
         <title>Bondage</title>
         <link rel="icon" href="images/favicon.png" type="image/x-icon">
         <script src="main.js"></script>
+        <script src="./node_modules/howler/dist/howler.js"></script>
+        <script>
+            var sound = new Howl({
+                src: ['sound.mp3']
+            });
+            sound.play();
+        </script>
         <style>
             html, body {
                 height: 100%;
