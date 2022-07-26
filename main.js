@@ -208,7 +208,7 @@ function startCanvas() {
     canvas = document.getElementById("canvas"); // RESIZECANVAS get the canvas element
     //canvas.addEventListener('mousemove', mouseMove); // add the mousemove event listener to the canvas element
     canvas.addEventListener('click', mouseClick); // add the mouseclick event listener to the canvas element
-    generateEnemies(2);//Adds 5 enemies to the game
+    generateEnemies(2);//Adds 2 enemies to the game
     score = 0;//Sets the score to 0
     gameInterval = setInterval(()=>{//Starts the game
         if(gameState=="menu"){
@@ -234,6 +234,7 @@ function mouseClick(event) {//This function is called when the mouse is clicked
     if(event.offsetX >=MENU_START_BUTTON.x&&event.offsetX <=MENU_START_BUTTON.x+MENU_START_BUTTON.width&&event.offsetY >=MENU_START_BUTTON.y&&event.offsetY <=MENU_START_BUTTON.y+MENU_START_BUTTON.height&&(gameState=="menu"||gameState=="gameOver")){//If the mouse is clicked on the start button
         gameState="game";//If the mouse is clicked on the start button, the gameState is set to game
         lives = 3;
+        generateEnemies(2);//Adds 2 enemies to the game
     }
 }
 
@@ -359,6 +360,7 @@ function mainLoop() {
     }
     if(lives <= 0){
         gameState="gameOver";//When the player runs out of lives, they die.
+        currentEnemies = [];//Clears the enemies
     }
     if(getPlayerDistance()<20){
         damagePlayer();
