@@ -1,4 +1,4 @@
-//Title: "Bondage"
+//Title: "Bonded"
 //Developed by: Thomas Jackson
 //Art by: Thomas Jackson
 //License: Creative Commons Attribution-NonCommercial-NoDerivs 2.0
@@ -82,7 +82,7 @@ class GameObject{//This is the GameObject class, for any object that needs posit
         }
     }
 }
-const MENU_LOGO = new GameObject("menuLogo",LOGO_IMAGE,CANVAS_WIDTH/2-508/2,2*80/4,508,80);//Creates the menu logo
+const MENU_LOGO = new GameObject("menuLogo",LOGO_IMAGE,CANVAS_WIDTH/2-448/2,2*80/4,448,80);//Creates the menu logo
 const MENU_START_BUTTON = new GameObject("menuStartButton",START_BUTTON_IMAGE,CANVAS_WIDTH/2-160/2,CANVAS_HEIGHT/2-160/2,160,160);//Creates the start button
 const PAUSE_BUTTON = new GameObject("pauseButton",PAUSE_BUTTON_IMAGE,CANVAS_WIDTH-(16*2),0+(16),16,16);//This is the pause button
 //var entities = [];
@@ -199,9 +199,9 @@ function attackProcedures(){//This function governs everything related to the at
     }
 }
 
-window.addEventListener('keydown', keyDown)
-window.addEventListener('keyup', keyUp)
-window.onload = startCanvas;
+window.addEventListener('keydown', keyDown)//Adds a keydown event listener
+window.addEventListener('keyup', keyUp)//Adds a keyup event listener
+window.onload = startCanvas;//This is the main loop of the game
 function startCanvas() {
     ctx = document.getElementById("canvas").getContext("2d");
     gameDiv = document.getElementById("gameDiv");
@@ -314,29 +314,29 @@ function menuLoop(){//This function is called when the gameState is set to menu 
     MENU_START_BUTTON.draw();//Draws the start button
     MENU_LOGO.draw();//Draws the logo
 
-    ctx.fillStyle = "white";
-    ctx.font = "30px arial";
-    ctx.fillText("How to play:",25,CANVAS_HEIGHT/2);
-    ctx.font = "20px arial";
-    ctx.fillText("WASD to move Square",25,CANVAS_HEIGHT/2+25);
-    ctx.fillText("Circle moves the opposite to Square",25,CANVAS_HEIGHT/2+50);
-    ctx.fillText("Space to attack",25,CANVAS_HEIGHT/2+75)
+    ctx.fillStyle = "white";//Sets the color to white
+    ctx.font = "30px arial";//Sets the font to 30px arial
+    ctx.fillText("How to play:",25,CANVAS_HEIGHT/2);//Writes the text "How to play"
+    ctx.font = "20px arial";//Sets the font to 20px arial
+    ctx.fillText("WASD to move Square",25,CANVAS_HEIGHT/2+25);//Writes the text "WASD to move Square"
+    ctx.fillText("Circle moves the opposite to Square",25,CANVAS_HEIGHT/2+50);//Writes the text "Circle moves the opposite to Square"
+    ctx.fillText("Space to attack",25,CANVAS_HEIGHT/2+75)//Writes the text "Space to attack"
 }
 
 function pauseMenuLoop(){
 }
 
 function photosensitiveWarningLoop(){//This loop displays all the text for the photosensitive warning
-    ctx.fillStyle="black";
-    ctx.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
-    ctx.fillStyle="red";
-    ctx.font = "50px Arial";
-    ctx.fillText("Photosensitivity warning!",CANVAS_WIDTH/2-250,CANVAS_HEIGHT/2-100);
-    ctx.fillStyle = "white";
-    ctx.font = "20px Arial";
-    ctx.fillText("Flashing colours, strobe effect, seizure risk",CANVAS_WIDTH/2-200,CANVAS_HEIGHT/2);
-    ctx.fillText("Press 'enter' to skip to menu",CANVAS_WIDTH/2-200,CANVAS_HEIGHT/2+50);
-    ctx.fillText("Press 'p' to enter photosensitive mode",CANVAS_WIDTH/2-200,CANVAS_HEIGHT/2+100);
+    ctx.fillStyle="black";//Sets the color to black
+    ctx.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);//Makes a black background
+    ctx.fillStyle="red";//Sets the color to red
+    ctx.font = "50px Arial";//Sets the font to 50px Arial
+    ctx.fillText("Photosensitivity warning!",CANVAS_WIDTH/2-250,CANVAS_HEIGHT/2-100);//Writes the text "Photosensitivity warning!"
+    ctx.fillStyle = "white";//Sets the color to white
+    ctx.font = "20px Arial";//Sets the font to 20px Arial
+    ctx.fillText("Flashing colours, strobe effect, seizure risk",CANVAS_WIDTH/2-200,CANVAS_HEIGHT/2);//Writes the text "Flashing colours, strobe effect, seizure risk"
+    ctx.fillText("Press 'enter' to skip to menu",CANVAS_WIDTH/2-200,CANVAS_HEIGHT/2+50);//Writes the text "Press 'enter' to skip to menu"
+    ctx.fillText("Press 'p' to enter photosensitive mode",CANVAS_WIDTH/2-200,CANVAS_HEIGHT/2+100);//Writes the text "Press 'p' to enter photosensitive mode"
 }
 
 function deathLoop(){
@@ -401,5 +401,5 @@ function mainLoop() {
     player1.draw(); //Draws the first player GameObject
     player2.draw(); //Draws the second player GameObject
     PAUSE_BUTTON.draw();
-    doEnemies(); //Draws the enemies
+    doEnemies(); //Draws the enemies and runs other enemy related things
 }
