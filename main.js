@@ -23,12 +23,14 @@ const LOGO_IMAGE = new Image();//This is the image for the logo
 const PAUSE_BUTTON_IMAGE = new Image();//This is the image for the pause button
 
 
-PLAYER_1_IMAGE.src = "images/player1.png";//This is the source for the first player image
-PLAYER_2_IMAGE.src = "images/player2.png";//This is the source for the second player image
-ENEMY_IMAGE.src = "images/enemy.png";//This is the source for the enemy image
-START_BUTTON_IMAGE.src = "images/startButton.png";//This is the source for the start button image
-LOGO_IMAGE.src = "images/logo.png";//This is the source for the logo image
-PAUSE_BUTTON_IMAGE.src = "images/pauseButton.png";//This is the source for the pause button image
+
+//These lines set the sources of my images
+PLAYER_1_IMAGE.src = "images/player1.png";
+PLAYER_2_IMAGE.src = "images/player2.png";
+ENEMY_IMAGE.src = "images/enemy.png";
+START_BUTTON_IMAGE.src = "images/startButton.png";
+LOGO_IMAGE.src = "images/logo.png";
+PAUSE_BUTTON_IMAGE.src = "images/pauseButton.png";
 
 
 
@@ -48,17 +50,17 @@ var gameState = "photosensitiveWarning";//Sets the gameState to menu
 var photosensitiveMode = false;//This is the variable for photosensitive mode
 class GameObject{//This is the GameObject class, for any object that needs positions, sizes, drawing, or movement
     constructor(id,image,x,y,width,height){//Constructor for the entity, had the identifier, texture, coordinates, and size
-        this.id=id;//Sets the identifier
-        this.image=image;//Sets the texture
-        this.x=x;//Sets the x coordinate
-        this.y=y;//Sets the y coordinate
-        this.width=width;//Sets the width
-        this.height=height;//Sets the height
+        this.id=id;
+        this.image=image;
+        this.x=x;
+        this.y=y;
+        this.width=width;
+        this.height=height;
     }
 
     setPosition(x,y){//Sets the position of the entity
-        this.x=x;//Sets the x coordinate
-        this.y=y;//Sets the y coordinate
+        this.x=x;
+        this.y=y;
     }
     draw(){//Draws the entity
         //console.log(player);
@@ -224,11 +226,6 @@ function startCanvas() {
         }
     }, 10); // Set up the animation with an interval timer
 }
-
-/*function mouseMove(e) {//This function is called when the mouse is moved
-    mouseX = e.offsetX;//Sets the mouseX variable to the mouse's x position
-    mouseY = e.offsetY;//Sets the mouseY variable to the mouse's y position
-}*/
 
 function mouseClick(event) {//This function is called when the mouse is clicked
     if(event.offsetX >=MENU_START_BUTTON.x&&event.offsetX <=MENU_START_BUTTON.x+MENU_START_BUTTON.width&&event.offsetY >=MENU_START_BUTTON.y&&event.offsetY <=MENU_START_BUTTON.y+MENU_START_BUTTON.height&&(gameState=="menu"||gameState=="gameOver")){//If the mouse is clicked on the start button
