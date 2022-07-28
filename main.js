@@ -386,7 +386,7 @@ function mainLoop() {
     console.log(currentEnemies)
     if(currentEnemies.length==0){
         //console.log("no");
-        generateEnemies(score/100)
+        generateEnemies(Math.floor(score/200))
     }
 
     ctx.fillStyle = "white";
